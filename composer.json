@@ -1,6 +1,6 @@
 {
 
-    "name": "oat/taoOpenId",
+    "name": "oat-sa/extension-tao-openid",
     "description" : "TAO Open ID library and helpers",
     "type" : "tao-extension",
     "authors" : [
