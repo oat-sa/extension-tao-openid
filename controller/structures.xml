@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE structures SYSTEM "../doc/structures.dtd">
+<structures>
+	<structure id="taoOpenId_main" name="Open ID library" level="15" group="main">
+		<description />
+		<sections>
+			<section id="taoOpenId_main" name="Open ID library" url="/taoOpenId/TaoOpenId/index" />
+			<section id="taoOpenId_other" name="Template" url="/taoOpenId/TaoOpenId/templateExample" />
+		</sections>
+	</structure>
+</structures>
