@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE structures SYSTEM "../doc/structures.dtd">
 <structures>
-	<structure id="taoOpenId_main" name="Open ID library" level="15" group="main">
-		<description />
-		<sections>
-			<section id="taoOpenId_main" name="Open ID library" url="/taoOpenId/TaoOpenId/index" />
-			<section id="taoOpenId_other" name="Template" url="/taoOpenId/TaoOpenId/templateExample" />
-		</sections>
-	</structure>
+    <structure id="settings" name="Settings" level="12" group="invisible">
+        <description/>
+        <sections>
+            <section id="taoOpenId_main" name="Open ID library" url="/taoOpenId/ConsumerAdmin/index">
+                <trees>
+                    <tree name="Open ID Consumers"
+                          className="Open ID Consumers"
+                          dataUrl="/taoOpenId/ComposerAdmin/getOntologyData"
+                          rootNode="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdConsumer"
+                          selectClass="openidconsumer-index"
+                          selectInstance="openidconsumer-edit"
+                          delete="openidconsumer-delete"
+                          />
+                </trees>
+                <actions>
+                    <action id="openidconsumer-index" name="Index" url="/taoLti/ConsumerAdmin/index" context="class" group="none" />
+                    <action id="openidconsumer-edit" name="Properties" url="/taoLti/ConsumerAdmin/editInstance" context="instance" group="none">
+                        <icon id="icon-edit"/>
+                    </action>
+                    <action id="openidconsumer-delete" name="Delete" binding="removeNode" url="/taoLti/ConsumerAdmin/delete" context="instance" group="tree">
+                        <icon id="icon-bin"/>
+                    </action>
+                    <action id="openidconsumer-import" name="Import" url="/tao/Import/index"  context="class" group="tree">
+                        <icon id="icon-import"/>
+                    </action>
+                    <action id="openidconsumer-export" name="Export" url="/tao/Export/index"  context="resource" group="tree">
+                        <icon id="icon-export"/>
+                    </action>
+                    <action id="openidconsumer-new" name="Add Consumer" url="/taoLti/ConsumerAdmin/addInstanceForm" context="class" group="tree">
+                        <icon id="icon-add"/>
+                    </action>
+                </actions>
+            </section>
+        </sections>
+    </structure>
 </structures>
