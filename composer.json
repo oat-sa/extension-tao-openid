@@ -21,7 +21,8 @@
     },
     "minimum-stability" : "dev",
     "require": {
-        "oat-sa/oatbox-extension-installer": "dev-master"
+        "oat-sa/oatbox-extension-installer": "dev-master",
+        "lcobucci/jwt": "^3.2"
     },
     "autoload" : {
         "psr-4" : {

@@ -28,7 +28,7 @@ return array(
     'label' => 'Open ID library',
     'description' => 'TAO Open ID library and helpers',
     'license' => 'GPL-2.0',
-    'version' => '0.0.2',
+    'version' => '0.0.3',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
         'tao' => '>=7.37.1'
@@ -38,6 +38,8 @@ return array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoOpenIdManager', array('ext'=>'taoOpenId')),
     ),
     'install' => array(
+        'php' => [
+        ],
         'rdf' => [
             __DIR__ . '/model/ontology/openid.rdf'
         ]
@@ -45,7 +47,7 @@ return array(
     'uninstall' => array(
     ),
     'routes' => array(
-        '/taoOpenId' => 'oat\\taoOpenId\\controller'
+        'taoOpenId' => 'oat\\taoOpenId\\controller'
     ),    
     'constants' => array(
         # views directory
