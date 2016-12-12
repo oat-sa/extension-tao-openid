@@ -48,7 +48,7 @@ return array(
     ),
     'routes' => array(
         'taoOpenId' => 'oat\\taoOpenId\\controller'
-    ),    
+    ),
     'constants' => array(
         # views directory
         "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
