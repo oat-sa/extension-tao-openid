@@ -4,7 +4,7 @@
     <structure id="settings" name="Settings" level="12" group="invisible">
         <description>Create Open ID Relying Party</description>
         <sections>
-            <section id="settings_openId_main" name="Open ID library" url="/taoOpenId/ConsumerAdmin/index">
+            <section id="settings_openId_main" name="Open ID Consumers" url="/taoOpenId/ConsumerAdmin/index">
                 <trees>
                     <tree name="Open ID Consumers"
                           className="Open ID Consumers"

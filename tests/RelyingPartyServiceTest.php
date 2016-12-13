@@ -23,8 +23,12 @@ namespace oat\taoOpenId\tests;
 
 
 use Lcobucci\JWT\Builder;
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Token;
 use oat\tao\test\TaoPhpUnitTestRunner;
+use oat\taoOpenId\model\ConsumerService;
 use oat\taoOpenId\model\RelyingPartyService;
+use Prophecy\Argument;
 
 
 class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
@@ -34,23 +38,70 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
      */
     private $service;
 
-    public function setUp()
+    private function _prepare($shouldBeCalled = [])
     {
-        parent::setUp();
-        $this->service = new RelyingPartyService([]);
+        $consumeService = $this->prophesize(ConsumerService::class);
+        $consumeService->getConfiguration(Argument::type('string'))
+            ->shouldBeCalledTimes($shouldBeCalled['consumeService->getConfiguration'])
+            ->willReturn([
+                ConsumerService::PROPERTY_ISS => 'http://example.com',
+                ConsumerService::PROPERTY_KEY => 'UniqueRpKeyForOP',
+                ConsumerService::PROPERTY_SECRET => 'somethingVerySafe',
+            ]);
+
+        $this->service = new RelyingPartyService([
+            'consumerService' => $consumeService->reveal()
+        ]);
+    }
+
+    public function tokensProvider()
+    {
+        $tokens = $this->getJwtTokens();
+        $tokens[] = [$this->getFakeToken()];
+        return $tokens;
+    }
+
+    public function getJwtTokens()
+    {
+        $tokens = [];
+        foreach (["eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIiwianRpIjoiNGYxZzIzYTEyYWEifQ\n.eyJpc3MiOiJodHRwOlwvXC9leGFtcGxlLmNvbSIsImF1ZCI6Imh0dHA6XC9cL2V4YW1wbGUub3JnIiwianRpIjoiNGYxZzIzYTEyYWEiLCJpYXQiOjE0ODE2MTYxNzksIm5iZiI6MTQ4MTYxNjIzOSwiZXhwIjoxNDgxNjE5Nzc5LCJ1aWQiOjF9."]
+                 as $token) {
+            $tokens[][] = (new Parser())->parse((string) $token);
+        }
+
+        return $tokens;
+    }
+
+    /**
+     * @return Token
+     */
+    private function getFakeToken()
+    {
+        return (new Builder())->issuedBy('http://example.com')// Configures the issuer (iss claim)
+        ->canOnlyBeUsedBy('http://example.org')// Configures the audience (aud claim)
+        ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
+        ->issuedAt(time())// Configures the time that the token was issue (iat claim)
+        ->canOnlyBeUsedAfter(time() + 60)// Configures the time that the token can be used (nbf claim)
+        ->expiresAt(time() + 3600)// Configures the expiration time of the token (nbf claim)
+        ->with('uid', 1)// Configures a new claim, called "uid"
+        ->getToken(); // Retrieves the generated token
     }
 
     public function testValidator()
     {
-        $token = (new Builder())->issuedBy('http://example.com')// Configures the issuer (iss claim)
-            ->canOnlyBeUsedBy('http://example.org')// Configures the audience (aud claim)
-            ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
-            ->issuedAt(time())// Configures the time that the token was issue (iat claim)
-            ->canOnlyBeUsedAfter(time() + 60)// Configures the time that the token can be used (nbf claim)
-            ->expiresAt(time() + 3600)// Configures the expiration time of the token (nbf claim)
-            ->with('uid', 1)// Configures a new claim, called "uid"
-            ->getToken(); // Retrieves the generated token
+        $this->_prepare(['consumeService->getConfiguration' => 1]);
 
-        $this->assertFalse($this->service->validate($token));
+        $token = $this->getFakeToken();
+        $validator = $this->service->validator($token);
+        // false, because we created a token that cannot be used before of `time() + 60`
+
+        $this->assertFalse($this->service->validate($token, $validator));
+        // changing the validation time to future
+        $validator->setCurrentTime(time() + 60);
+        // true, because validation information is equals to data contained on the token
+        $this->assertTrue($this->service->validate($token, $validator));
+        // changing the validation time to the far future
+        $validator->setCurrentTime(time() + 4000);
+        $this->assertFalse($this->service->validate($token, $validator));
     }
 }

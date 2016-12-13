@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAIQ,2DAAS,CACP,OAAO,CAAE,OAAO",
+"sources": ["../scss/openid.scss"],
+"names": [],
+"file": "openid.css"
+}

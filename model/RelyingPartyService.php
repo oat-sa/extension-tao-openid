@@ -30,33 +30,64 @@ class RelyingPartyService extends ConfigurableService
 {
     const SERVICE_ID = 'taoOpenId/RP';
 
+    private $consumerService;
+
     public function __construct(array $options)
     {
         parent::__construct($options);
+
+        if (isset($options['consumerService']) && $options['consumerService'] instanceof ConsumerService) {
+            $this->consumerService = $options['consumerService'];
+        } else {
+            $this->consumerService = ConsumerService::singleton();
+        }
     }
 
-    public function validator()
-    {}
+    /**
+     * @param Token $token
+     * @param null $time - Current time() (if you use TZ, set $time in current TZ)
+     * # common_session_SessionManager::getSession()->getTimezone(), new \DateTimeZone($timeZone)
+     * # (new \DateTime('now', new \DateTimeZone($timeZone)))->getTimestamp()
+     *
+     * @return ValidationData | false
+     */
+    public function validator(Token $token, $time=null)
+    {
+        $validator = false;
+        $token->getHeaders(); // Retrieves the token header
+        $token->getClaims(); // Retrieves the token claims
+
+        $iss = $token->getClaim('iss');
+
+        $config = $this->consumerService->getConfiguration($iss);
+        if (count($config)) {
+
+            // It will use the current time to validate (iat, nbf and exp)
+            $validator = new ValidationData($time);
+
+            $audience = $token->getClaim('aud');
+            $id = $token->getHeader('jti');
+
+            $validator->setIssuer($iss);
+            $validator->setAudience($audience);
+            $validator->setId($id);
+        }
+        return $validator;
+    }
 
     /**
      * @param Token $token
      * @return bool
      */
-    public function validate(Token $token)
+    public function validate(Token $token, ValidationData $validator = null)
     {
-        $token->getHeaders(); // Retrieves the token header
-        $token->getClaims(); // Retrieves the token claims
-        $iss = $token->getClaim('iss');
+        if (!$validator) {
+            $validator = $this->validator($token);
+        }
 
-        // todo get configuration for this $iss
-        //getProperty();
-
-        // todo set current time (in the current TZ?)
-        $validator = new ValidationData(); // It will use the current time to validate (iat, nbf and exp)
-        // todo set properties from the saved data
-        $validator->setIssuer($iss);
-        $validator->setAudience('http://example.org');
-        $validator->setId('4f1g23a12aa');
+        if ($validator == false) {
+            return false;
+        }
 
         return $token->validate($validator);
     }

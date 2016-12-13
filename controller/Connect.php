@@ -22,7 +22,16 @@
 namespace oat\taoOpenId\controller;
 
 
-class Connect
+class Connect extends \tao_actions_CommonModule
 {
+    /**
+     * callback uri for getting answering from the OP
+     * OP responds with an ID Token and usually an Access Token.
+     * RP can send a request with the Access Token to the UserInfo Endpoint.
+     * UserInfo Endpoint returns Claims about the End-User.
+     */
+    public function callback()
+    {
 
+    }
 }
