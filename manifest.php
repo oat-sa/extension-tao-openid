@@ -18,6 +18,7 @@
  *               
  * 
  */
+use oat\taoOpenId\scripts\update\Updater;
 
 /**
  * Generated using taoDevTools 2.17.0
@@ -27,7 +28,7 @@ return array(
     'label' => 'Open ID library',
     'description' => 'TAO Open ID library and helpers',
     'license' => 'GPL-2.0',
-    'version' => '0.0.1',
+    'version' => '0.0.2',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
         'tao' => '>=7.37.1'
@@ -37,12 +38,17 @@ return array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoOpenIdManager', array('ext'=>'taoOpenId')),
     ),
     'install' => array(
+        'php' => [
+        ],
+        'rdf' => [
+            __DIR__ . '/model/ontology/openid.rdf'
+        ]
     ),
     'uninstall' => array(
     ),
     'routes' => array(
-        '/taoOpenId' => 'oat\\taoOpenId\\controller'
-    ),    
+        'taoOpenId' => 'oat\\taoOpenId\\controller'
+    ),
     'constants' => array(
         # views directory
         "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
@@ -53,6 +59,7 @@ return array(
         #BASE WWW required by JS
         'BASE_WWW' => ROOT_URL.'taoOpenId/views/'
     ),
+    'update'    => Updater::class,
     'extra' => array(
         'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',
     )

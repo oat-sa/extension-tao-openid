@@ -1,0 +1,11 @@
+#tree-settings_openId_main {
+  ul.ltr {
+    .node-instance {
+      ins {
+        &:before {
+          content: '\e60b';
+        }
+      }
+    }
+  }
+}
