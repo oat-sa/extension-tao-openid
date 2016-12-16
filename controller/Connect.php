@@ -32,6 +32,6 @@ class Connect extends \tao_actions_CommonModule
      */
     public function callback()
     {
-
+        $this->returnJson(['success' => true]);
     }
 }

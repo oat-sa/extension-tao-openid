@@ -36,6 +36,7 @@ return array(
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoOpenIdManager',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoOpenIdManager', array('ext'=>'taoOpenId')),
+        array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole', array('ext'=>'taoOpenId','mod' => 'Connect', 'act' => 'callback')),
     ),
     'install' => array(
         'php' => [

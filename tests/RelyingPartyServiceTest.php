@@ -89,6 +89,31 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
         ->getToken(); // Retrieves the generated token
     }
 
+    public function taoFakeToken()
+    {
+        $roles = new \stdClass();
+        $a = '8196';
+        $b = '7352';
+        $roles->$a = [12, 42];
+        $roles->$b = [12];
+
+        return (new Builder())->issuedBy('https://registry.nccer.org')// Configures the issuer (iss claim)
+        ->canOnlyBeUsedBy('tao')// Configures the audience (aud claim)
+        ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
+        ->issuedAt(time())// Configures the time that the token was issue (iat claim)
+        ->canOnlyBeUsedAfter(time() + 60)// Configures the time that the token can be used (nbf claim)
+        ->expiresAt(time() + 3600)// Configures the expiration time of the token (nbf claim)
+        ->with('name', 'frotto baggins')// Configures a new claim, called "name"
+        ->with('lang', 'en_US')// Configures a new claim, called "locale"
+        ->with('https://nccer.org/roles', $roles)// Configures a new claim
+        ->getToken(); // Retrieves the generated token
+    }
+
+    public function testTaoKey()
+    {
+        echo $this->taoFakeToken();
+    }
+
     public function testTimeValidator()
     {
         $this->_prepare(['consumeService->getConfiguration' => 1]);
