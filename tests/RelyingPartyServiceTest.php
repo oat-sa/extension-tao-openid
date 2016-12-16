@@ -28,6 +28,7 @@ use Lcobucci\JWT\Token;
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoOpenId\model\ConsumerService;
 use oat\taoOpenId\model\RelyingPartyService;
+use OutOfBoundsException;
 use Prophecy\Argument;
 
 
@@ -40,6 +41,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
 
     private function _prepare($shouldBeCalled = [])
     {
+        /** @var ConsumerService $consumeService */
         $consumeService = $this->prophesize(ConsumerService::class);
         $consumeService->getConfiguration(Argument::type('string'))
             ->shouldBeCalledTimes($shouldBeCalled['consumeService->getConfiguration'])
@@ -87,14 +89,13 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
         ->getToken(); // Retrieves the generated token
     }
 
-    public function testValidator()
+    public function testTimeValidator()
     {
         $this->_prepare(['consumeService->getConfiguration' => 1]);
 
         $token = $this->getFakeToken();
         $validator = $this->service->validator($token);
         // false, because we created a token that cannot be used before of `time() + 60`
-
         $this->assertFalse($this->service->validate($token, $validator));
         // changing the validation time to future
         $validator->setCurrentTime(time() + 60);
@@ -102,6 +103,62 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
         $this->assertTrue($this->service->validate($token, $validator));
         // changing the validation time to the far future
         $validator->setCurrentTime(time() + 4000);
+        $this->assertFalse($this->service->validate($token, $validator));
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     * @expectedExceptionMessage Requested claim is not configured
+     */
+    public function testEmptyToken()
+    {
+        $this->_prepare(['consumeService->getConfiguration' => 1]);
+        $token = (new Builder())->getToken();
+        $validator = $this->service->validator($token);
+        $this->assertFalse($this->service->validate($token, $validator));
+    }
+
+    public function testAllRequiredFields()
+    {
+        $this->_prepare(['consumeService->getConfiguration' => 1]);
+
+        $token = (new Builder())
+            ->issuedBy('http://example.com')
+            ->canOnlyBeUsedBy('http://example.org')// Configures the audience (aud claim)
+            ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
+            ->getToken(); // Retrieves the generated token
+
+        $validator = $this->service->validator($token);
+        $this->assertTrue($this->service->validate($token, $validator));
+    }
+
+    public function testUnexpectedIssuer()
+    {
+        $this->_prepare(['consumeService->getConfiguration' => 1]);
+
+        $token = (new Builder())
+            ->issuedBy('http://example.com')
+            ->canOnlyBeUsedBy('http://example.org')// Configures the audience (aud claim)
+            ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
+            ->getToken(); // Retrieves the generated token
+
+        $validator = $this->service->validator($token);
+        $validator->setIssuer('http://oops.wrong');
+        $this->assertFalse($this->service->validate($token, $validator));
+    }
+
+    public function testUnexpectedAudience()
+    {
+        $this->_prepare(['consumeService->getConfiguration' => 1]);
+
+        $token = (new Builder())
+            ->issuedBy('http://example.com')
+            ->canOnlyBeUsedBy('http://example.org')// Configures the audience (aud claim)
+            ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
+            ->getToken(); // Retrieves the generated token
+
+        $validator = $this->service->validator($token);
+        $validator->setAudience('http://oops.wrong');
         $this->assertFalse($this->service->validate($token, $validator));
     }
 }

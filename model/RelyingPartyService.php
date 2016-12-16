@@ -68,10 +68,12 @@ class RelyingPartyService extends ConfigurableService
             $audience = $token->getClaim('aud');
             $id = $token->getHeader('jti');
 
+            // todo I think that should be configurable fields (but I need an approve)
             $validator->setIssuer($iss);
             $validator->setAudience($audience);
             $validator->setId($id);
         }
+
         return $validator;
     }
 
