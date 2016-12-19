@@ -19,37 +19,16 @@
  * @author Alexander Zagovorichev <zagovorichev@1pt.com>
  */
 
-namespace oat\taoOpenId\controller;
+namespace oat\taoOpenId\scripts\install;
 
 
+use oat\oatbox\extension\InstallAction;
 use oat\taoOpenId\model\RelyingPartyService;
 
-class Connect extends \tao_actions_CommonModule
+class RelyingPartyServiceRegister extends InstallAction
 {
-    public function __construct()
+    public function __invoke($params)
     {
-
-        parent::__construct();
-        $this->service = $this->getServiceManager()->get(RelyingPartyService::SERVICE_ID);
-    }
-
-    /**
-     * callback uri for getting answering from the OP
-     * OP responds with an ID Token and usually an Access Token.
-     * RP can send a request with the Access Token to the UserInfo Endpoint.
-     * UserInfo Endpoint returns Claims about the End-User.
-     */
-    public function callback()
-    {
-        $jwt = $this->getRequestParameter('key');
-        $jwt = $this->service->parse($jwt);
-
-        if ($this->service->validate($jwt)) {
-            // continue
-            $this->returnJson(['success' => true]);
-        }
-
-        $this->returnJson(['success' => false]);
-
+        $this->getServiceManager()->register(RelyingPartyService::SERVICE_ID, new RelyingPartyService([]));
     }
 }

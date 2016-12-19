@@ -25,6 +25,7 @@ namespace oat\taoOpenId\scripts\update;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoOpenId\model\RelyingPartyService;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -35,6 +36,11 @@ class Updater extends \common_ext_ExtensionUpdater
             AclProxy::applyRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole', ['ext'=>'taoOpenId','mod' => 'Connect', 'act' => 'callback']));
 
             $this->setVersion('0.0.2');
+        }
+
+        if ($this->isVersion('0.0.2')) {
+            $this->getServiceManager()->register(RelyingPartyService::SERVICE_ID, new RelyingPartyService([]));
+            $this->setVersion('0.1.0');
         }
     }
 }

@@ -22,6 +22,7 @@
 namespace oat\taoOpenId\model;
 
 
+use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use oat\oatbox\service\ConfigurableService;
@@ -92,5 +93,10 @@ class RelyingPartyService extends ConfigurableService
         }
 
         return $token->validate($validator);
+    }
+
+    public function parse($token = '')
+    {
+        return (new Parser())->parse((string) $token);
     }
 }

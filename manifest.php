@@ -28,7 +28,7 @@ return array(
     'label' => 'Open ID library',
     'description' => 'TAO Open ID library and helpers',
     'license' => 'GPL-2.0',
-    'version' => '0.0.2',
+    'version' => '0.1.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
         'tao' => '>=7.37.1'
@@ -40,6 +40,7 @@ return array(
     ),
     'install' => array(
         'php' => [
+            \oat\taoOpenId\scripts\install\RelyingPartyServiceRegister::class,
         ],
         'rdf' => [
             __DIR__ . '/model/ontology/openid.rdf'
