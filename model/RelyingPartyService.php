@@ -67,12 +67,20 @@ class RelyingPartyService extends ConfigurableService
             $validator = new ValidationData($time);
 
             $audience = $token->getClaim('aud');
-            $id = $token->getHeader('jti');
+            $subject = $token->getClaim('sub');
+
+            $id = '';
+            if ($token->hasHeader('jti')) {
+                $id = $token->getHeader('jti');
+            } elseif ($token->hasHeader('kid')) {
+                $id = $token->getHeader('kid');
+            }
 
             // todo I think that should be configurable fields (but I need an approve)
             $validator->setIssuer($iss);
             $validator->setAudience($audience);
             $validator->setId($id);
+            $validator->setSubject($subject);
         }
 
         return $validator;

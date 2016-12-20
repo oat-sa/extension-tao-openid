@@ -26,6 +26,11 @@ use oat\taoOpenId\model\RelyingPartyService;
 
 class Connect extends \tao_actions_CommonModule
 {
+    /**
+     * @var RelyingPartyService
+     */
+    protected $service;
+
     public function __construct()
     {
 
@@ -41,15 +46,15 @@ class Connect extends \tao_actions_CommonModule
      */
     public function callback()
     {
-        $jwt = $this->getRequestParameter('key');
+        $jwt = $this->getRequestParameter('id_token');
+        // also in the request you can find scope, state and session_state
         $jwt = $this->service->parse($jwt);
 
         if ($this->service->validate($jwt)) {
             // continue
             $this->returnJson(['success' => true]);
+        } else {
+            $this->returnJson(['success' => false]);
         }
-
-        $this->returnJson(['success' => false]);
-
     }
 }
