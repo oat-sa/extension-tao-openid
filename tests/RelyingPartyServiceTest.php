@@ -81,6 +81,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
     {
         return (new Builder())->issuedBy('http://example.com')// Configures the issuer (iss claim)
         ->canOnlyBeUsedBy('http://example.org')// Configures the audience (aud claim)
+        ->relatedTo('15782409')
         ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
         ->issuedAt(time())// Configures the time that the token was issue (iat claim)
         ->canOnlyBeUsedAfter(time() + 60)// Configures the time that the token can be used (nbf claim)
@@ -99,6 +100,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
 
         return (new Builder())->issuedBy('https://registry.nccer.org')// Configures the issuer (iss claim)
         ->canOnlyBeUsedBy('tao')// Configures the audience (aud claim)
+        ->relatedTo('15782409')
         ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
         ->issuedAt(time())// Configures the time that the token was issue (iat claim)
         ->canOnlyBeUsedAfter(time() + 60)// Configures the time that the token can be used (nbf claim)
@@ -149,6 +151,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
 
         $token = (new Builder())
             ->issuedBy('http://example.com')
+            ->relatedTo('15782409') // (sub claim)
             ->canOnlyBeUsedBy('http://example.org')// Configures the audience (aud claim)
             ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
             ->getToken(); // Retrieves the generated token
@@ -163,6 +166,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
 
         $token = (new Builder())
             ->issuedBy('http://example.com')
+            ->relatedTo('15782409')
             ->canOnlyBeUsedBy('http://example.org')// Configures the audience (aud claim)
             ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
             ->getToken(); // Retrieves the generated token
@@ -178,6 +182,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
 
         $token = (new Builder())
             ->issuedBy('http://example.com')
+            ->relatedTo('15782409')
             ->canOnlyBeUsedBy('http://example.org')// Configures the audience (aud claim)
             ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
             ->getToken(); // Retrieves the generated token
