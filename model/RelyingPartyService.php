@@ -33,7 +33,7 @@ class RelyingPartyService extends ConfigurableService
 
     private $consumerService;
 
-    public function __construct(array $options)
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
