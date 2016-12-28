@@ -111,10 +111,10 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
         ->getToken(); // Retrieves the generated token
     }
 
-    public function testTaoKey()
+    /*public function testTaoKey()
     {
         echo $this->taoFakeToken();
-    }
+    }*/
 
     public function testTimeValidator()
     {
