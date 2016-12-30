@@ -43,6 +43,7 @@ class Connect extends \tao_actions_CommonModule
      * OP responds with an ID Token and usually an Access Token.
      * RP can send a request with the Access Token to the UserInfo Endpoint.
      * UserInfo Endpoint returns Claims about the End-User.
+     * @throws \common_exception_BadRequest
      */
     public function callback()
     {
@@ -51,10 +52,11 @@ class Connect extends \tao_actions_CommonModule
         $jwt = $this->service->parse($jwt);
 
         if ($this->service->validate($jwt)) {
-            // continue
-            $this->returnJson(['success' => true]);
+            \common_Logger::d('token validated successfully');
+            $this->service->delegateControl($jwt);
         } else {
-            $this->returnJson(['success' => false]);
+            \common_Logger::d('token validated failed');
+            throw new \common_exception_BadRequest();// something more custom here?
         }
     }
 }

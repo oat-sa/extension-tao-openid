@@ -23,6 +23,7 @@ namespace oat\taoOpenId\model;
 
 
 use common_Logger;
+use oat\tao\helpers\ControllerHelper;
 use tao_models_classes_ClassService;
 
 class ConsumerService extends tao_models_classes_ClassService
@@ -31,6 +32,7 @@ class ConsumerService extends tao_models_classes_ClassService
     const PROPERTY_ISS = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdIss';
     const PROPERTY_KEY = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdClientKey';
     const PROPERTY_SECRET = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdSecret';
+    const PROPERTY_ENTRY_POINT = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#EntryHandler';
 
     public function getRootClass()
     {
@@ -64,14 +66,35 @@ class ConsumerService extends tao_models_classes_ClassService
             $res = $instance->getPropertiesValues([
                 self::PROPERTY_KEY,
                 self::PROPERTY_SECRET,
+                self::PROPERTY_ENTRY_POINT,
             ]);
 
             $config = [
                 self::PROPERTY_KEY => $res[self::PROPERTY_KEY][0]->literal,
                 self::PROPERTY_SECRET => $res[self::PROPERTY_SECRET][0]->literal,
+                self::PROPERTY_ENTRY_POINT => $res[self::PROPERTY_ENTRY_POINT][0]->literal,
             ];
         }
 
         return $config;
     }
+
+    /**
+     * @return array
+     */
+    public function getAvailableEntryPoints()
+    {
+        $data = array();
+        foreach (\common_ext_ExtensionsManager::singleton()->getInstalledExtensions() as $ext) {
+            foreach ( ControllerHelper::getControllers($ext->getId()) as $controller ){
+                $class = new \ReflectionClass($controller);
+                if ($class->implementsInterface('oat\taoOpenId\model\OpenIdEntryAwareInterface') ){
+                    $data[] = $controller;
+                }
+            }
+        }
+        return $data;
+    }
+
+
 }

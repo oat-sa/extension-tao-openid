@@ -42,5 +42,10 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(RelyingPartyService::SERVICE_ID, new RelyingPartyService([]));
             $this->setVersion('0.1.0');
         }
+
+        if ($this->isVersion('0.1.0')) {
+            OntologyUpdater::syncModels();
+            $this->setVersion('0.2.0');
+        }
     }
 }

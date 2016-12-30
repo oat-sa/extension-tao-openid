@@ -22,15 +22,19 @@
 namespace oat\taoOpenId\model;
 
 
+use common_session_SessionManager;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\helpers\ControllerHelper;
+use oat\tao\model\routing\FlowController;
+use oat\taoOpenId\model\session\OpenIdAwareSessionInterface;
+use oat\taoOpenId\model\session\Session;
 
 class RelyingPartyService extends ConfigurableService
 {
     const SERVICE_ID = 'taoOpenId/RP';
-
     private $consumerService;
 
     public function __construct(array $options = [])
@@ -52,7 +56,7 @@ class RelyingPartyService extends ConfigurableService
      *
      * @return ValidationData | false
      */
-    public function validator(Token $token, $time=null)
+    public function validator(Token $token, $time = null)
     {
         $validator = false;
         $token->getHeaders(); // Retrieves the token header
@@ -105,6 +109,38 @@ class RelyingPartyService extends ConfigurableService
 
     public function parse($token = '')
     {
-        return (new Parser())->parse((string) $token);
+        return (new Parser())->parse((string)$token);
+    }
+
+    public function delegateControl(Token $token)
+    {
+        $iss = $token->getClaim('iss');
+        $config = $this->consumerService->getConfiguration($iss);
+        $controller = $config[ConsumerService::PROPERTY_ENTRY_POINT];
+        $reflectedController = new \ReflectionClass($controller);
+        if ($controller && $reflectedController->implementsInterface('oat\\taoOpenId\\model\\OpenIdEntryAwareInterface')) {
+            common_session_SessionManager::endSession();
+            $session = new Session();
+            common_session_SessionManager::startSession($session);
+            $session->setToken($token);
+
+            $flow = new FlowController();
+            $flow->redirect(_url('entry', $reflectedController->getShortName(),
+                ControllerHelper::getExtensionByController($controller)), 302);
+        }
+    }
+
+    /***
+     * @return Token|null
+     * @throws \common_exception_Error
+     */
+    public function retrieveSessionToken()
+    {
+        $session = common_session_SessionManager::getSession();
+        if ($session instanceof OpenIdAwareSessionInterface) {
+            return $session->getToken();
+        }
+        return null;
+
     }
 }
