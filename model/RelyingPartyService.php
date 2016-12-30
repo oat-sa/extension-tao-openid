@@ -27,7 +27,6 @@ use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use oat\oatbox\service\ConfigurableService;
-use oat\tao\helpers\ControllerHelper;
 use oat\tao\model\routing\FlowController;
 use oat\taoOpenId\model\session\OpenIdAwareSessionInterface;
 use oat\taoOpenId\model\session\Session;
@@ -126,7 +125,7 @@ class RelyingPartyService extends ConfigurableService
 
             $flow = new FlowController();
             $flow->redirect(_url('entry', $reflectedController->getShortName(),
-                ControllerHelper::getExtensionByController($controller)), 302);
+                \funcAcl_helpers_Map::getExtensionFromController($controller)), 302);
         }
     }
 
