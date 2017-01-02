@@ -22,6 +22,7 @@
 namespace oat\taoOpenId\controller;
 
 
+use oat\taoOpenId\model\InvalidTokenException;
 use oat\taoOpenId\model\RelyingPartyService;
 
 class Connect extends \tao_actions_CommonModule
@@ -55,8 +56,7 @@ class Connect extends \tao_actions_CommonModule
             \common_Logger::d('token validated successfully');
             $this->service->delegateControl($jwt);
         } else {
-            \common_Logger::d('token validated failed');
-            throw new \common_exception_BadRequest();// something more custom here?
+            throw new InvalidTokenException('token validated failed');
         }
     }
 }
