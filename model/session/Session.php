@@ -1,9 +1,9 @@
 <?php
 namespace oat\taoOpenId\model\session;
 
+use common_session_StatefulSession;
 use Lcobucci\JWT\Token;
 use oat;
-use PHPSession;
 
 /**
  * This program is free software; you can redistribute it and/or
@@ -24,7 +24,7 @@ use PHPSession;
  *
  * @author Mikhail Kamarouski <kamarouski@1pt.com>
  */
-class Session extends \common_session_AnonymousSession implements \common_session_StatefulSession, OpenIdAwareSessionInterface
+class Session extends \common_session_BasicSession implements common_session_StatefulSession, OpenIdAwareSessionInterface
 {
     private $token;
 

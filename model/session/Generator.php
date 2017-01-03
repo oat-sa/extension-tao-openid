@@ -21,7 +21,6 @@
 
 namespace oat\taoOpenId\model\session;
 
-
 class Generator
 {
 
@@ -29,6 +28,10 @@ class Generator
 
     public function createFrom($params)
     {
-        return new \common_session_AnonymousSession();
+        $user = new \oat\taoOpenId\model\User(new \oat\taoOpenId\model\Token($params['token']));
+
+        $session = new \oat\taoOpenId\model\session\Session($user);
+        $session->setToken($params['token']);
+        return $session;
     }
 }

@@ -21,8 +21,6 @@
 
 namespace oat\taoOpenId\model;
 
-
-use common_session_SessionManager;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
