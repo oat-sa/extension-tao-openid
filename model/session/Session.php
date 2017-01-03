@@ -26,27 +26,18 @@ use PHPSession;
  */
 class Session extends \common_session_AnonymousSession implements \common_session_StatefulSession, OpenIdAwareSessionInterface
 {
-
-    const SESSION_TOKEN_NAME = 'openIdToken';
+    private $token;
 
     public function setToken(Token $token)
     {
-        PHPSession::singleton()->setAttribute(self::SESSION_TOKEN_NAME, $token);
+        $this->token = $token;
     }
-
 
     /**
      * @return Token|null
      */
     public function getToken()
     {
-        $token = null;
-        if (PHPSession::singleton()->hasAttribute(self::SESSION_TOKEN_NAME)) {
-            $token = PHPSession::singleton()->getAttribute(self::SESSION_TOKEN_NAME);
-            if (!$token instanceof Token) {
-                $token = null;
-            }
-        }
-        return $token;
+        return $this->token;
     }
 }
