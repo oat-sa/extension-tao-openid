@@ -23,7 +23,7 @@ namespace oat\taoOpenId\model;
 
 
 use common_Logger;
-use oat\tao\helpers\ControllerHelper;
+use oat\tao\model\mvc\DefaultUrlService;
 use tao_models_classes_ClassService;
 
 class ConsumerService extends tao_models_classes_ClassService
@@ -33,6 +33,8 @@ class ConsumerService extends tao_models_classes_ClassService
     const PROPERTY_KEY = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdClientKey';
     const PROPERTY_SECRET = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdSecret';
     const PROPERTY_ENTRY_POINT = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#EntryHandler';
+
+    const urlContext = 'openIdEntry';
 
     public function getRootClass()
     {
@@ -50,7 +52,7 @@ class ConsumerService extends tao_models_classes_ClassService
         $config = [];
         $instances = $this->getRootClass()->searchInstances([
             self::PROPERTY_ISS => $iss
-        ],[
+        ], [
             'recursive' => false,
             'like' => false,
         ]);
@@ -81,19 +83,18 @@ class ConsumerService extends tao_models_classes_ClassService
 
     /**
      * @return array
+     * @throws \oat\oatbox\service\ServiceNotFoundException
+     * @throws \common_Exception
      */
     public function getAvailableEntryPoints()
     {
-        $data = array();
-        foreach (\common_ext_ExtensionsManager::singleton()->getInstalledExtensions() as $ext) {
-            foreach ( ControllerHelper::getControllers($ext->getId()) as $controller ){
-                $class = new \ReflectionClass($controller);
-                if ($class->implementsInterface('oat\taoOpenId\model\OpenIdEntryAwareInterface') ){
-                    $data[] = $controller;
-                }
-            }
-        }
-        return $data;
+        /** @var DefaultUrlService $urlService */
+        $urlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
+        $routes = $urlService->getOptions();
+        $routes = array_keys(array_filter($routes, function ($route) {
+            return isset($route['context']) && $route['context'] === self::urlContext;
+        }));
+        return $routes;
     }
 
 

@@ -45,6 +45,10 @@ class Connect extends \tao_actions_CommonModule
      * RP can send a request with the Access Token to the UserInfo Endpoint.
      * UserInfo Endpoint returns Claims about the End-User.
      * @throws \common_exception_BadRequest
+     * @throws \OutOfBoundsException
+     * @throws \oat\taoOpenId\model\InvalidTokenException
+     * @throws \common_Exception
+     * @throws \oat\oatbox\service\ServiceNotFoundException
      */
     public function callback()
     {
@@ -54,9 +58,10 @@ class Connect extends \tao_actions_CommonModule
 
         if ($this->service->validate($jwt)) {
             \common_Logger::d('token validated successfully');
-            $this->service->delegateControl($jwt);
+            $uri = $this->service->delegateControl($jwt);
+            $this->redirect($uri);
         } else {
-            throw new InvalidTokenException('token validated failed');
+            throw new InvalidTokenException('token validation failed');
         }
     }
 }

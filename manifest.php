@@ -41,6 +41,7 @@ return array(
     'install' => array(
         'php' => [
             \oat\taoOpenId\scripts\install\RelyingPartyServiceRegister::class,
+            \oat\taoOpenId\scripts\install\SetUpEntryOpenIdEntryPoint::class,
         ],
         'rdf' => [
             __DIR__ . '/model/ontology/openid.rdf'

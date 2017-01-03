@@ -45,8 +45,8 @@ class AddConsumer extends tao_actions_form_CreateInstance
      */
     private function getOpenIdEntryPointsHandler()
     {
-        $controllers = ConsumerService::singleton()->getAvailableEntryPoints();
-        return array_combine($controllers, $controllers);
+        $entryPoints = ConsumerService::singleton()->getAvailableEntryPoints();
+        return array_combine($entryPoints, $entryPoints);
     }
 
 }
