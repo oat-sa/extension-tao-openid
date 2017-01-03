@@ -43,6 +43,11 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         if ($this->isVersion('0.0.2')) {
+            AclProxy::applyRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole', ['ext'=>'taoOpenId','mod' => 'Connect', 'act' => 'callback']));
+            $this->setVersion('0.0.3');
+        }
+        
+        if ($this->isVersion('0.0.3')) {
             OntologyUpdater::syncModels();
 
             $this->getServiceManager()->register(RelyingPartyService::SERVICE_ID, new RelyingPartyService([]));
