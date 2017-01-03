@@ -124,7 +124,7 @@ class RelyingPartyService extends ConfigurableService
         $entryPointId = $config[ConsumerService::PROPERTY_ENTRY_POINT];
         /** @var DefaultUrlService $urlService */
         $urlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
-        if ($entryPointId && $urlService->hasOption($entryPointId)) {
+        if ($entryPointId) {
             $session = $this->getServiceManager()->get(SessionService::SERVICE_ID)->create($entryPointId, ['token'=>$token]);
             $uri = $urlService->getUrl($entryPointId);
         }
