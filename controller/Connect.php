@@ -27,17 +27,6 @@ use oat\taoOpenId\model\RelyingPartyService;
 
 class Connect extends \tao_actions_CommonModule
 {
-    /**
-     * @var RelyingPartyService
-     */
-    protected $service;
-
-    public function __construct()
-    {
-
-        parent::__construct();
-        $this->service = $this->getServiceManager()->get(RelyingPartyService::SERVICE_ID);
-    }
 
     /**
      * callback uri for getting answering from the OP
@@ -52,13 +41,14 @@ class Connect extends \tao_actions_CommonModule
      */
     public function callback()
     {
+        $service = $this->getServiceManager()->get(RelyingPartyService::SERVICE_ID);
         $jwt = $this->getRequestParameter('id_token');
         // also in the request you can find scope, state and session_state
-        $jwt = $this->service->parse($jwt);
+        $jwt = $service->parse($jwt);
 
-        if ($this->service->validate($jwt)) {
+        if ($service->validate($jwt)) {
             \common_Logger::d('token validated successfully');
-            $uri = $this->service->delegateControl($jwt);
+            $uri = $service->delegateControl($jwt);
             $this->redirect($uri);
         } else {
             throw new InvalidTokenException('token validation failed');
