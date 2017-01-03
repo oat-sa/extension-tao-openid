@@ -32,7 +32,6 @@ class SessionService extends ConfigurableService
 {
     const SERVICE_ID = 'taoOpenId/session';
 
-    const OPTION_ = '';
 
     /**
      * @param string|null $name
