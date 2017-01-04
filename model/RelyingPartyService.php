@@ -22,6 +22,8 @@
 namespace oat\taoOpenId\model;
 
 use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use oat\oatbox\service\ConfigurableService;
@@ -75,7 +77,6 @@ class RelyingPartyService extends ConfigurableService
                 $id = $token->getHeader('kid');
             }
 
-            // todo I think that should be configurable fields (but I need an approve)
             $validator->setIssuer($iss);
             $validator->setAudience($audience);
             $validator->setId($id);
@@ -99,7 +100,31 @@ class RelyingPartyService extends ConfigurableService
             return false;
         }
 
-        return $token->validate($validator);
+        return $token->validate($validator) && $this->verifySign($token, $validator->get('iss'));
+    }
+
+    private function verifySign(Token $token, $iss='')
+    {
+
+        $config = $this->consumerService->getConfiguration($iss);
+
+
+        $verified = true;
+        if (isset($config[ConsumerService::PROPERTY_ENCRYPTION])) {
+            switch ($config[ConsumerService::PROPERTY_ENCRYPTION]) {
+                case 'RSA':
+                    $signer = new Sha256();
+                    $verified = $token->verify(
+                        $signer,
+                        new Key($config[ConsumerService::PROPERTY_SECRET], isset($config[ConsumerService::PROPERTY_KEY]) ? $config[ConsumerService::PROPERTY_KEY] : '')
+                    );
+                    break;
+                default:
+                    throw new InvalidConsumerConfigException('Undefined type of the signature '. $config['signer']);
+            }
+        }
+
+        return $verified;
     }
 
     public function parse($token = '')
