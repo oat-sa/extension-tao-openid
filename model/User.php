@@ -21,7 +21,6 @@ namespace oat\taoOpenId\model;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\user\User as UserInterface;
 use oat\tao\model\user\TaoRoles;
-use oat\taoNccer\model\Token;
 
 class User implements UserInterface
 {
@@ -38,7 +37,7 @@ class User implements UserInterface
     /** @var  string */
     protected $id;
 
-    public function __construct(\oat\taoOpenId\model\Token $token)
+    public function __construct(Token $token)
     {
         $this->setToken($token);
         $this->id = $this->getToken()->getId();
