@@ -108,16 +108,18 @@ class RelyingPartyService extends ConfigurableService
 
         $config = $this->consumerService->getConfiguration($iss);
 
-
         $verified = true;
         if (isset($config[ConsumerService::PROPERTY_ENCRYPTION])) {
             switch ($config[ConsumerService::PROPERTY_ENCRYPTION]) {
-                case 'RSA':
+                case ConsumerService::PROPERTY_ENCRYPTION_TYPE_RSA:
                     $signer = new Sha256();
                     $verified = $token->verify(
                         $signer,
                         new Key($config[ConsumerService::PROPERTY_SECRET], isset($config[ConsumerService::PROPERTY_KEY]) ? $config[ConsumerService::PROPERTY_KEY] : '')
                     );
+                    break;
+                case ConsumerService::PROPERTY_ENCRYPTION_TYPE_NULL:
+                    // without signatures
                     break;
                 default:
                     throw new InvalidConsumerConfigException('Undefined type of the signature '. $config['signer']);

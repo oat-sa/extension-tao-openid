@@ -32,6 +32,8 @@ class ConsumerService extends tao_models_classes_ClassService
     const PROPERTY_ISS = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdIss';
     const PROPERTY_KEY = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdClientKey';
     const PROPERTY_ENCRYPTION = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryption';
+    const PROPERTY_ENCRYPTION_TYPE_RSA = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryptionTypeRsa';
+    const PROPERTY_ENCRYPTION_TYPE_NULL = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryptionTypeNull';
     const PROPERTY_SECRET = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdSecret';
     const PROPERTY_ENTRY_POINT = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#EntryHandler';
 
