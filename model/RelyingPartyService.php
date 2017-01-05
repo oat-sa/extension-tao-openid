@@ -21,18 +21,20 @@
 
 namespace oat\taoOpenId\model;
 
-
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\mvc\DefaultUrlService;
 
 class RelyingPartyService extends ConfigurableService
 {
     const SERVICE_ID = 'taoOpenId/RP';
-
     private $consumerService;
 
-    public function __construct(array $options)
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
 
@@ -51,7 +53,7 @@ class RelyingPartyService extends ConfigurableService
      *
      * @return ValidationData | false
      */
-    public function validator(Token $token, $time=null)
+    public function validator(Token $token, $time = null)
     {
         $validator = false;
         $token->getHeaders(); // Retrieves the token header
@@ -66,12 +68,19 @@ class RelyingPartyService extends ConfigurableService
             $validator = new ValidationData($time);
 
             $audience = $token->getClaim('aud');
-            $id = $token->getHeader('jti');
+            $subject = $token->getClaim('sub');
 
-            // todo I think that should be configurable fields (but I need an approve)
+            $id = '';
+            if ($token->hasHeader('jti')) {
+                $id = $token->getHeader('jti');
+            } elseif ($token->hasHeader('kid')) {
+                $id = $token->getHeader('kid');
+            }
+
             $validator->setIssuer($iss);
             $validator->setAudience($audience);
             $validator->setId($id);
+            $validator->setSubject($subject);
         }
 
         return $validator;
@@ -91,6 +100,58 @@ class RelyingPartyService extends ConfigurableService
             return false;
         }
 
-        return $token->validate($validator);
+        return $token->validate($validator) && $this->verifySign($token, $validator->get('iss'));
     }
+
+    private function verifySign(Token $token, $iss='')
+    {
+
+        $config = $this->consumerService->getConfiguration($iss);
+
+
+        $verified = true;
+        if (isset($config[ConsumerService::PROPERTY_ENCRYPTION])) {
+            switch ($config[ConsumerService::PROPERTY_ENCRYPTION]) {
+                case 'RSA':
+                    $signer = new Sha256();
+                    $verified = $token->verify(
+                        $signer,
+                        new Key($config[ConsumerService::PROPERTY_SECRET], isset($config[ConsumerService::PROPERTY_KEY]) ? $config[ConsumerService::PROPERTY_KEY] : '')
+                    );
+                    break;
+                default:
+                    throw new InvalidConsumerConfigException('Undefined type of the signature '. $config['signer']);
+            }
+        }
+
+        return $verified;
+    }
+
+    public function parse($token = '')
+    {
+        return (new Parser())->parse((string)$token);
+    }
+
+    /**
+     * @param Token $token
+     * @return null|\string
+     * @throws \oat\oatbox\service\ServiceNotFoundException
+     * @throws \common_Exception
+     * @throws \OutOfBoundsException
+     */
+    public function delegateControl(Token $token)
+    {
+        $uri = null;
+        $iss = $token->getClaim('iss');
+        $config = $this->consumerService->getConfiguration($iss);
+        $entryPointId = $config[ConsumerService::PROPERTY_ENTRY_POINT];
+        /** @var DefaultUrlService $urlService */
+        $urlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
+        if ($entryPointId) {
+            $session = $this->getServiceManager()->get(SessionService::SERVICE_ID)->create($entryPointId, ['token'=>$token]);
+            $uri = $urlService->getUrl($entryPointId);
+        }
+        return $uri;
+    }
+
 }
