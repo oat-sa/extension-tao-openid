@@ -22,8 +22,13 @@
 namespace oat\taoOpenId\controller;
 
 
+use Exception;
+use oat\taoOpenId\controller\form\AddConsumer;
+use oat\taoOpenId\controller\form\EditConsumer;
 use oat\taoOpenId\model\ConsumerService;
 use tao_actions_SaSModule;
+use tao_helpers_Request;
+use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
 class ConsumerAdmin extends tao_actions_SaSModule
 {
@@ -37,4 +42,63 @@ class ConsumerAdmin extends tao_actions_SaSModule
     {
         return ConsumerService::singleton();
     }
+
+    public function editInstance()
+    {
+        $clazz = $this->getCurrentClass();
+        $instance = $this->getCurrentInstance();
+        $myFormContainer = new EditConsumer($clazz, $instance);
+
+        $myForm = $myFormContainer->getForm();
+        if ($myForm->isSubmited()) {
+            if ($myForm->isValid()) {
+
+                $values = $myForm->getValues();
+                // save properties
+                $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
+                $instance = $binder->bind($values);
+                $message = __('Instance saved');
+
+                $this->setData('message', $message);
+                $this->setData('reload', true);
+            }
+        }
+
+        $this->setData('formTitle', __('Edit Instance'));
+        $this->setData('myForm', $myForm->render());
+        $this->setView('form.tpl', 'tao');
+    }
+
+
+    /**
+     * Add an instance of the selected class
+     * @return void
+     * @throws Exception
+     */
+    public function addInstanceForm()
+    {
+        if (!tao_helpers_Request::isAjax()) {
+            throw new Exception('wrong request mode');
+        }
+
+        $clazz = $this->getCurrentClass();
+        $formContainer = new AddConsumer(array($clazz), array());
+        $myForm = $formContainer->getForm();
+
+        if ($myForm->isSubmited()) {
+            if ($myForm->isValid()) {
+                $properties = $myForm->getValues();
+                $instance = $this->createInstance(array($clazz), $properties);
+
+                $this->setData('message', __($instance->getLabel() . ' created'));
+                $this->setData('reload', true);
+            }
+        }
+
+        $this->setData('formTitle', __('Create instance of ') . $clazz->getLabel());
+        $this->setData('myForm', $myForm->render());
+
+        $this->setView('form.tpl', 'tao');
+    }
+
 }

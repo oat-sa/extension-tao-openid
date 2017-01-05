@@ -22,16 +22,36 @@
 namespace oat\taoOpenId\controller;
 
 
+use oat\taoOpenId\model\InvalidTokenException;
+use oat\taoOpenId\model\RelyingPartyService;
+
 class Connect extends \tao_actions_CommonModule
 {
+
     /**
      * callback uri for getting answering from the OP
      * OP responds with an ID Token and usually an Access Token.
      * RP can send a request with the Access Token to the UserInfo Endpoint.
      * UserInfo Endpoint returns Claims about the End-User.
+     * @throws \common_exception_BadRequest
+     * @throws \OutOfBoundsException
+     * @throws \oat\taoOpenId\model\InvalidTokenException
+     * @throws \common_Exception
+     * @throws \oat\oatbox\service\ServiceNotFoundException
      */
     public function callback()
     {
+        $service = $this->getServiceManager()->get(RelyingPartyService::SERVICE_ID);
+        $jwt = $this->getRequestParameter('id_token');
+        // also in the request you can find scope, state and session_state
+        $jwt = $service->parse($jwt);
 
+        if ($service->validate($jwt)) {
+            \common_Logger::d('token validated successfully');
+            $uri = $service->delegateControl($jwt);
+            $this->redirect($uri);
+        } else {
+            throw new InvalidTokenException('token validation failed');
+        }
     }
 }

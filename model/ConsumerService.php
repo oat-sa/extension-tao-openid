@@ -23,6 +23,7 @@ namespace oat\taoOpenId\model;
 
 
 use common_Logger;
+use oat\tao\model\mvc\DefaultUrlService;
 use tao_models_classes_ClassService;
 
 class ConsumerService extends tao_models_classes_ClassService
@@ -30,7 +31,11 @@ class ConsumerService extends tao_models_classes_ClassService
     const CLASS_URI = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdConsumer';
     const PROPERTY_ISS = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdIss';
     const PROPERTY_KEY = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdClientKey';
+    const PROPERTY_ENCRYPTION = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryption';
     const PROPERTY_SECRET = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdSecret';
+    const PROPERTY_ENTRY_POINT = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#EntryHandler';
+
+    const urlContext = 'openIdEntry';
 
     public function getRootClass()
     {
@@ -48,7 +53,7 @@ class ConsumerService extends tao_models_classes_ClassService
         $config = [];
         $instances = $this->getRootClass()->searchInstances([
             self::PROPERTY_ISS => $iss
-        ],[
+        ], [
             'recursive' => false,
             'like' => false,
         ]);
@@ -64,14 +69,34 @@ class ConsumerService extends tao_models_classes_ClassService
             $res = $instance->getPropertiesValues([
                 self::PROPERTY_KEY,
                 self::PROPERTY_SECRET,
+                self::PROPERTY_ENTRY_POINT,
             ]);
 
             $config = [
                 self::PROPERTY_KEY => $res[self::PROPERTY_KEY][0]->literal,
                 self::PROPERTY_SECRET => $res[self::PROPERTY_SECRET][0]->literal,
+                self::PROPERTY_ENTRY_POINT => $res[self::PROPERTY_ENTRY_POINT][0]->literal,
             ];
         }
 
         return $config;
     }
+
+    /**
+     * @return array
+     * @throws \oat\oatbox\service\ServiceNotFoundException
+     * @throws \common_Exception
+     */
+    public function getAvailableEntryPoints()
+    {
+        /** @var DefaultUrlService $urlService */
+        $urlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
+        $routes = $urlService->getOptions();
+        $routes = array_keys(array_filter($routes, function ($route) {
+            return isset($route['context']) && $route['context'] === self::urlContext;
+        }));
+        return $routes;
+    }
+
+
 }
