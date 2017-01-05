@@ -201,7 +201,6 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
             ->shouldBeCalledTimes(1)
             ->willReturn([
                 ConsumerService::PROPERTY_ISS => 'http://example.com',
-                ConsumerService::PROPERTY_KEY => 'idsrv3test',
                 ConsumerService::PROPERTY_SECRET => 'Bag Attributes
     Microsoft Local Key set: <No Values>
     localKeyID: 01 00 00 00 
@@ -263,7 +262,7 @@ NCo5JD8Q+RQ5yZEy7YPoifwemLhTdsBz3hlZr28oCGJ3kbnpW0xGvQb3VHSTVVbe
 ei0CfXoW6iz1
 -----END CERTIFICATE-----
 ',
-                ConsumerService::PROPERTY_ENCRYPTION => 'RSA',
+                ConsumerService::PROPERTY_ENCRYPTION => ConsumerService::PROPERTY_ENCRYPTION_TYPE_RSA,
             ]);
 
         $this->service = new RelyingPartyService([
@@ -286,6 +285,113 @@ ei0CfXoW6iz1
 
     protected function getSampleDir(){
         return __DIR__.DIRECTORY_SEPARATOR.'samples'.DIRECTORY_SEPARATOR;
+    }
+
+    public function testOtherToken()
+    {
+        $consumeService = $this->prophesize(ConsumerService::class);
+        $consumeService->getConfiguration(Argument::type('string'))
+            ->shouldBeCalledTimes(1)
+            ->willReturn([
+                ConsumerService::PROPERTY_ISS => 'http://example.com',
+                ConsumerService::PROPERTY_SECRET => '
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxFm5NxmLV+dO+jbOT0je
++M0k/KtaB8NTxHu8F2ep1YtOyvs3TO9BHJfdYqwV+n1gxRgTSPBAZhtWboTayb02
+g55ygBBTwtfatVxrSbmKYw6X2tlJO91j566jp04F9wIZ4P1dspCxTc7bABeAcgeS
+O7tQbCQTZy/O8+Wi190xiSnd/BwoM8NjMO8VeeG+p0c700+u7fQR8QXSeac4/eWz
+Xo1FD//q8hxmVsf2QQ9+NWedi+ceoQDV3LtOow4hfu27zT0zCbQPiNwodyBL6be4
+ML9BloLWD3fATzLLo5wVD4OSmTSsoTciFxTcD26tklHhYQWj9pWn9r0aLCtrNDeK
+ZQIDAQAB
+-----END PUBLIC KEY-----
+',
+                ConsumerService::PROPERTY_ENCRYPTION => ConsumerService::PROPERTY_ENCRYPTION_TYPE_RSA,
+            ]);
+
+        $this->service = new RelyingPartyService([
+            'consumerService' => $consumeService->reveal()
+        ]);
+
+        $signer = new Sha256();
+
+        $token = (new Builder())
+            ->issuedBy('http://example.com')
+            ->relatedTo('15782409') // (sub claim)
+            ->canOnlyBeUsedBy('http://example.org')// Configures the audience (aud claim)
+            ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
+            ->sign($signer, new Key('-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: DES-EDE3-CBC,60C89CE28973A2DC
+
+wwn2dzwvM5rY3CBM6rXwbaK1LDu/kIHU8aZBv9eb1o8FsYl2bROYKLCMRw6y1pyC
+NA+CydnOlf/xfdeA9AMBitqRWQtD5T9UtFk/Tna1xU12UdMjBqF72uuLqGOyKY6P
+IdkPN49JaEQAHxBXl9vxWu/rla7eR71CBTYYvFGNj+9mdu6g28arQMq9NtHYNySh
+mod9KDV9RCcD+LvkihR4gHA5GCMBnG1BjspW8+Ty9npxCJo03NKHNR6geHZ62WWL
+v17lbrJ/DXQ9U92+GFx8DjWWFObxyOVyaEBfTe6Qy+ckn9cmaPyapfVpChXLJuW+
+CwwrDj7uWw6mbY6tQhQ+OrM3l82q6g+huha54eb+1LzOUc+k+9C7o0CZvfAEL5or
+tAWsXx6G2PIVX3lhdk71II6pnbcGLeQ0IxNBBlTXUgtS6TXDirXT2mPzpHnWrwfC
+j0LlkRGhCaa+sOkW+LPZBcIINPvrgbv719IYRhi5OpIJvDVgK+jz/nOiw4CUoVtW
+/IdqlmXZFWVSAZtqjwXl18IUrfWleJTXqMiPVLkuIoVNBHa9m+3q5+bCB9dyMmD+
+XBjcpeDo9gom0fncfZCWcYKaUvsbFeeju9CKeMvIfaa/0z5msGo5j7sQJgEu+Wz7
+nsoMqd2pjrtQDJ0o8qdJokAY6NLAaggbQIWm+70FqyqfhNDI+KyWJqT85JUwN93z
+OHWUUhahHy3jzSSROK0TBCCkN2kz9YsTNWDv90PWbBgECLb9uN7Rx/yGL/opNj7e
+kLvqWSsgwAc5AryquNmWRxheRS7/NtWAEf6aWseZAIamd1FOexo37DYLt9sQCE+Y
+8k6uYnBio3g2XDIIuE5pjEGrO+Gm6DvZRtEpPAkRsHtfsz2NFQ6hyiKAw0aYKfUM
++5/30FzOgOT8+lZKPK5QNSom0IS0g+4ZupzKOh2+ClhYuS99DMv3x8ESnQSh6vHM
+nrJiU/2huJxoWPgqb0ZyTvrr14SLUoVQMBrQ+hF8DVd6rkV3AoQf7uCF/MvZXlJQ
+g8r3nIfMzJk9s2FL3+WTBVJ0qfgZlaupGV3xAXJN2rhsw7gH3uC1klU2yhexQwMF
+AhlCqW+zZrBTWSDSQaudHKViskF54bNh+pBo9MnEOdW05SWQhNHuP8An62Enynt5
+63Tss2/fFcKeqD545ICj/mnIyRdO3vgcA/Aes8xweE8nmYl4e3HQxEqsiBkCj77Z
+bMQsnmfQXXMAH+8GXoyG8Lw7c4fg/ZhH4d4uDNqu43wUz07QmWF3XiPFqN2GScYs
+cVVEaOYabiS5uq+e8Pu2v6LSKocqLb/iXKOWpO+2lJtBL90pBd5QYwU9LAifWFva
+hRFBWOoJMhRIJWMDXJYtGWTHy41iTVedkE8NhcXd5CLEqKGCDAuqimtnmvWswqsh
+YToDwYPc9eM8QHFeVZ10tyOriwUaalJMU4r88Msy0mS4loRHNAFNWMh6BKnsf59T
+wqf+Vew54o7aMKuWZt35x5fB+ynAJIsngtDZWT3F4AziKkUlRAUFsWIcAhffpI/Q
+wyPVYlhkwT6sdDFWJ3bwMbPUBXltjX3Hi6Q3nYEy+3ifYXgITx2iWQpkE0dLT9ip
+-----END RSA PRIVATE KEY-----', 'gfhfyjz'))
+            ->getToken(); // Retrieves the generated token
+
+        $validator = $this->service->validator($token);
+        $this->assertTrue($this->service->validate($token, $validator));
+    }
+
+    public function testMixedTokens()
+    {
+        $consumeService = $this->prophesize(ConsumerService::class);
+        $consumeService->getConfiguration(Argument::type('string'))
+            ->shouldBeCalledTimes(1)
+            ->willReturn([
+                ConsumerService::PROPERTY_ISS => 'http://example.com',
+                ConsumerService::PROPERTY_SECRET => '
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxFm5NxmLV+dO+jbOT0je
++M0k/KtaB8NTxHu8F2ep1YtOyvs3TO9BHJfdYqwV+n1gxRgTSPBAZhtWboTayb02
+g55ygBBTwtfatVxrSbmKYw6X2tlJO91j566jp04F9wIZ4P1dspCxTc7bABeAcgeS
+O7tQbCQTZy/O8+Wi190xiSnd/BwoM8NjMO8VeeG+p0c700+u7fQR8QXSeac4/eWz
+Xo1FD//q8hxmVsf2QQ9+NWedi+ceoQDV3LtOow4hfu27zT0zCbQPiNwodyBL6be4
+ML9BloLWD3fATzLLo5wVD4OSmTSsoTciFxTcD26tklHhYQWj9pWn9r0aLCtrNDeK
+ZQIDAQAB
+-----END PUBLIC KEY-----
+',
+                ConsumerService::PROPERTY_ENCRYPTION => ConsumerService::PROPERTY_ENCRYPTION_TYPE_RSA,
+            ]);
+
+        $this->service = new RelyingPartyService([
+            'consumerService' => $consumeService->reveal()
+        ]);
+
+        $signer = new Sha256();
+
+        $token = (new Builder())
+            ->issuedBy('http://example.com')
+            ->relatedTo('15782409') // (sub claim)
+            ->canOnlyBeUsedBy('http://example.org')// Configures the audience (aud claim)
+            ->identifiedBy('4f1g23a12aa', true)// Configures the id (jti claim), replicating as a header item
+            ->sign($signer, new Key('file://'.$this->getSampleDir() .'root.pem', 'idsrv3test'))
+            ->getToken(); // Retrieves the generated token
+
+        $validator = $this->service->validator($token);
+        $this->assertFalse($this->service->validate($token, $validator));
     }
 
 }

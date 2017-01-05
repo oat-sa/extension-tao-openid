@@ -81,6 +81,8 @@ class RelyingPartyService extends ConfigurableService
             $validator->setAudience($audience);
             $validator->setId($id);
             $validator->setSubject($subject);
+        } else {
+            \common_Logger::e('OpenId consumer '.$iss.' wasn\'t configured');
         }
 
         return $validator;
@@ -115,14 +117,14 @@ class RelyingPartyService extends ConfigurableService
                     $signer = new Sha256();
                     $verified = $token->verify(
                         $signer,
-                        new Key($config[ConsumerService::PROPERTY_SECRET], isset($config[ConsumerService::PROPERTY_KEY]) ? $config[ConsumerService::PROPERTY_KEY] : '')
+                        new Key($config[ConsumerService::PROPERTY_SECRET])
                     );
                     break;
                 case ConsumerService::PROPERTY_ENCRYPTION_TYPE_NULL:
                     // without signatures
                     break;
                 default:
-                    throw new InvalidConsumerConfigException('Undefined type of the signature '. $config['signer']);
+                    throw new InvalidConsumerConfigException('Undefined type of the signature '. $config[ConsumerService::PROPERTY_ENCRYPTION]);
             }
         }
 

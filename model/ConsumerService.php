@@ -72,12 +72,14 @@ class ConsumerService extends tao_models_classes_ClassService
                 self::PROPERTY_KEY,
                 self::PROPERTY_SECRET,
                 self::PROPERTY_ENTRY_POINT,
+                self::PROPERTY_ENCRYPTION,
             ]);
 
             $config = [
-                self::PROPERTY_KEY => $res[self::PROPERTY_KEY][0]->literal,
-                self::PROPERTY_SECRET => $res[self::PROPERTY_SECRET][0]->literal,
+                self::PROPERTY_KEY => count($res[self::PROPERTY_KEY]) ? $res[self::PROPERTY_KEY][0]->literal : '',
+                self::PROPERTY_SECRET => count($res[self::PROPERTY_SECRET]) ? $res[self::PROPERTY_SECRET][0]->literal : '',
                 self::PROPERTY_ENTRY_POINT => $res[self::PROPERTY_ENTRY_POINT][0]->literal,
+                self::PROPERTY_ENCRYPTION => $res[self::PROPERTY_ENCRYPTION][0]->getUri(),
             ];
         }
 
