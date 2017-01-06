@@ -55,7 +55,7 @@ class Connect extends \tao_actions_CommonModule
             http_response_code(500);
             common_Logger::d('Token validation was failed ' . $this->getRequestParameter('id_token'));
             $label = $service->getConsumerService()->getConsumerLabel($jwt, __('your system administrator'));
-            $this->returnError(__('We\'ve been unable to authorize you to the Tao Platform. Please contact %s',
+            $this->returnError(__('We\'ve been unable to authorize you to the Tao Platform. Please contact %s.',
                 $label), false);
         }
     }
