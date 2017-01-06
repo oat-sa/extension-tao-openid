@@ -41,6 +41,7 @@ class Connect extends \tao_actions_CommonModule
      */
     public function callback()
     {
+        /** @var  RelyingPartyService $service */
         $service = $this->getServiceManager()->get(RelyingPartyService::SERVICE_ID);
         $jwt = $this->getRequestParameter('id_token');
         // also in the request you can find scope, state and session_state
@@ -53,7 +54,9 @@ class Connect extends \tao_actions_CommonModule
         } else {
             http_response_code(500);
             common_Logger::d('Token validation was failed ' . $this->getRequestParameter('id_token'));
-            $this->returnError(__('We\'ve been unable to authorize you to the Tao Platform. Please contact your system administrator'));
+            $label = $service->getConsumerService()->getConsumerLabel($jwt, __('your system administrator'));
+            $this->returnError(__('We\'ve been unable to authorize you to the Tao Platform. Please contact %s',
+                $label));
         }
     }
 }
