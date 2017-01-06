@@ -22,7 +22,7 @@
 namespace oat\taoOpenId\controller;
 
 
-use oat\taoOpenId\model\InvalidTokenException;
+use common_Logger;
 use oat\taoOpenId\model\RelyingPartyService;
 
 class Connect extends \tao_actions_CommonModule
@@ -47,11 +47,13 @@ class Connect extends \tao_actions_CommonModule
         $jwt = $service->parse($jwt);
 
         if ($service->validate($jwt)) {
-            \common_Logger::d('token validated successfully');
+            common_Logger::d('token validated successfully');
             $uri = $service->delegateControl($jwt);
             $this->redirect($uri);
         } else {
-            throw new InvalidTokenException('token validation failed');
+            http_response_code(500);
+            common_Logger::d('Token validation was failed ' . $this->getRequestParameter('id_token'));
+            $this->returnError('Token validation was failed');
         }
     }
 }
