@@ -22,7 +22,14 @@
 namespace oat\taoOpenId\scripts\update;
 
 
+use oat\tao\model\accessControl\func\AccessRule;
+use oat\tao\model\accessControl\func\AclProxy;
+use oat\tao\model\mvc\DefaultUrlService;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoOpenId\model\ConsumerService;
+use oat\taoOpenId\model\RelyingPartyService;
+use oat\taoOpenId\model\session\Generator;
+use oat\taoOpenId\model\SessionService;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -32,5 +39,34 @@ class Updater extends \common_ext_ExtensionUpdater
             OntologyUpdater::syncModels();
             $this->setVersion('0.0.2');
         }
+
+        if ($this->isVersion('0.0.2')) {
+            AclProxy::applyRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/generis.rdf#AnonymousRole', ['ext'=>'taoOpenId','mod' => 'Connect', 'act' => 'callback']));
+            $this->setVersion('0.0.3');
+        }
+        
+        if ($this->isVersion('0.0.3')) {
+            OntologyUpdater::syncModels();
+
+            $this->getServiceManager()->register(RelyingPartyService::SERVICE_ID, new RelyingPartyService([]));
+            $this->getServiceManager()->register(SessionService::SERVICE_ID, new SessionService([
+                Generator::entryPointId =>  Generator::class
+            ]));
+
+            $UrlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
+
+            $UrlService->setOption(Generator::entryPointId,
+                [
+                    'ext' => 'tao',
+                    'controller' => 'Main',
+                    'action' => 'entry',
+                    'context' => ConsumerService::urlContext
+                ]
+            );
+            $this->getServiceManager()->register(DefaultUrlService::SERVICE_ID, $UrlService);
+            
+            $this->setVersion('0.2.0');
+        }
+        $this->skip('0.2.0', '0.2.1');
     }
 }
