@@ -22,7 +22,7 @@
 namespace oat\taoOpenId\controller;
 
 
-use oat\taoOpenId\model\InvalidTokenException;
+use common_Logger;
 use oat\taoOpenId\model\RelyingPartyService;
 
 class Connect extends \tao_actions_CommonModule
@@ -41,17 +41,22 @@ class Connect extends \tao_actions_CommonModule
      */
     public function callback()
     {
+        /** @var  RelyingPartyService $service */
         $service = $this->getServiceManager()->get(RelyingPartyService::SERVICE_ID);
         $jwt = $this->getRequestParameter('id_token');
         // also in the request you can find scope, state and session_state
         $jwt = $service->parse($jwt);
 
         if ($service->validate($jwt)) {
-            \common_Logger::d('token validated successfully');
+            common_Logger::d('token validated successfully');
             $uri = $service->delegateControl($jwt);
             $this->redirect($uri);
         } else {
-            throw new InvalidTokenException('token validation failed');
+            http_response_code(500);
+            common_Logger::d('Token validation was failed ' . $this->getRequestParameter('id_token'));
+            $label = $service->getConsumerService()->getConsumerLabel($jwt, __('your system administrator'));
+            $this->returnError(__('We\'ve been unable to authorize you to the Tao Platform. Please contact %s.',
+                $label), false);
         }
     }
 }
