@@ -53,7 +53,7 @@ class Connect extends \tao_actions_CommonModule
         } else {
             http_response_code(500);
             common_Logger::d('Token validation was failed ' . $this->getRequestParameter('id_token'));
-            $this->returnError('Token validation was failed');
+            $this->returnError(__('We\'ve been unable to authorize you to the Tao Platform. Please contact your system administrator'));
         }
     }
 }
