@@ -50,11 +50,12 @@ class ConsumerService extends tao_models_classes_ClassService
      *
      * @return array - client_id and client_secret properties for the iss
      */
-    public function getConfiguration($iss = '')
+    public function getConfiguration($iss = '', $kid = '')
     {
         $config = [];
         $instances = $this->getRootClass()->searchInstances([
-            self::PROPERTY_ISS => $iss
+            self::PROPERTY_ISS => $iss,
+            self::PROPERTY_KEY => $kid
         ], [
             'recursive' => false,
             'like' => false,

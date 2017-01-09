@@ -60,8 +60,9 @@ class RelyingPartyService extends ConfigurableService
         $token->getClaims(); // Retrieves the token claims
 
         $iss = $token->getClaim('iss');
+        $kid = $token->hasHeader('kid') ? $token->getHeader('kid') : '';
 
-        $config = $this->consumerService->getConfiguration($iss);
+        $config = $this->consumerService->getConfiguration($iss, $kid);
         if (count($config)) {
 
             // It will use the current time to validate (iat, nbf and exp)
