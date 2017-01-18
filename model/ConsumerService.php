@@ -23,6 +23,7 @@ namespace oat\taoOpenId\model;
 
 
 use common_Logger;
+use Lcobucci\JWT\Token;
 use oat\tao\model\mvc\DefaultUrlService;
 use tao_models_classes_ClassService;
 
@@ -101,6 +102,33 @@ class ConsumerService extends tao_models_classes_ClassService
             return isset($route['context']) && $route['context'] === self::urlContext;
         }));
         return $routes;
+    }
+
+    /**
+     * Return user label for associated to token provider
+     * @param Token $token
+     * @param string $default
+     * @return string
+     */
+    public function getConsumerLabel(Token $token, $default = '')
+    {
+        $label = $default;
+        $iss = $token->getClaim('iss');
+        $instances = $this->getRootClass()->searchInstances([
+            self::PROPERTY_ISS => $iss
+        ], [
+            'recursive' => false,
+            'like' => false,
+        ]);
+
+        $instance = current($instances);
+        if ($instance) {
+            $label = $instance->getLabel();
+        }
+
+        return $label;
+
+
     }
 
 

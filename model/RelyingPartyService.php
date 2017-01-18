@@ -32,6 +32,7 @@ use oat\tao\model\mvc\DefaultUrlService;
 class RelyingPartyService extends ConfigurableService
 {
     const SERVICE_ID = 'taoOpenId/RP';
+    /** @var ConsumerService */
     private $consumerService;
 
     public function __construct(array $options = [])
@@ -106,7 +107,7 @@ class RelyingPartyService extends ConfigurableService
         return $token->validate($validator) && $this->verifySign($token, $validator->get('iss'));
     }
 
-    private function verifySign(Token $token, $iss='')
+    private function verifySign(Token $token, $iss = '')
     {
 
         $config = $this->consumerService->getConfiguration($iss);
@@ -153,10 +154,20 @@ class RelyingPartyService extends ConfigurableService
         /** @var DefaultUrlService $urlService */
         $urlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
         if ($entryPointId) {
-            $session = $this->getServiceManager()->get(SessionService::SERVICE_ID)->create($entryPointId, ['token'=>$token]);
+            $session = $this->getServiceManager()->get(SessionService::SERVICE_ID)->create($entryPointId,
+                ['token' => $token]);
             $uri = $urlService->getUrl($entryPointId);
         }
         return $uri;
     }
+
+    /**
+     * @return $this|ConsumerService
+     */
+    public function getConsumerService()
+    {
+        return $this->consumerService;
+    }
+
 
 }

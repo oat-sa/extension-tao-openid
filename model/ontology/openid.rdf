@@ -4,6 +4,7 @@
         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
         xmlns:tao="http://www.tao.lu/Ontologies/TAO.rdf#"
+        xmlns:generis="http://www.tao.lu/Ontologies/generis.rdf#"
         xmlns:widget="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#"
         xmlns:generis="http://www.tao.lu/Ontologies/generis.rdf#"
 >
@@ -27,10 +28,12 @@
         <rdfs:comment xml:lang="en-US"><![CDATA[Identifier of the Open ID client]]></rdfs:comment>
         <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdConsumer"/>
         <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+        <generis:validationRule><![CDATA[notEmpty]]></generis:validationRule>
         <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#TextBox"/>
     </rdf:Description>
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdSecret">
         <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <generis:validationRule><![CDATA[notEmpty]]></generis:validationRule>
         <rdfs:label xml:lang="en-US"><![CDATA[Client secret]]></rdfs:label>
         <rdfs:comment xml:lang="en-US"><![CDATA[Secret used for signatures]]></rdfs:comment>
         <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdConsumer"/>
