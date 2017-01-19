@@ -60,15 +60,13 @@ class RelyingPartyService extends ConfigurableService
         $token->getHeaders(); // Retrieves the token header
         $token->getClaims(); // Retrieves the token claims
 
-        $iss = $token->getClaim('iss');
-        $kid = $token->hasHeader('kid') ? $token->getHeader('kid') : '';
-
-        $config = $this->consumerService->getConfiguration($iss, $kid);
+        $config = $this->getConfig($token);
         if (count($config)) {
 
             // It will use the current time to validate (iat, nbf and exp)
             $validator = new ValidationData($time);
 
+            $iss = $token->getClaim('iss');
             $audience = $token->getClaim('aud');
             $subject = $token->getClaim('sub');
 
@@ -148,8 +146,7 @@ class RelyingPartyService extends ConfigurableService
     public function delegateControl(Token $token)
     {
         $uri = null;
-        $iss = $token->getClaim('iss');
-        $config = $this->consumerService->getConfiguration($iss);
+        $config = $this->getConfig($token);
         $entryPointId = $config[ConsumerService::PROPERTY_ENTRY_POINT];
         /** @var DefaultUrlService $urlService */
         $urlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
@@ -159,6 +156,14 @@ class RelyingPartyService extends ConfigurableService
             $uri = $urlService->getUrl($entryPointId);
         }
         return $uri;
+    }
+
+    private function getConfig(Token $token)
+    {
+        $iss = $token->getClaim('iss');
+        $kid = $token->hasHeader('kid') ? $token->getHeader('kid') : '';
+
+        return $this->consumerService->getConfiguration($iss, $kid);
     }
 
     /**
