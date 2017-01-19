@@ -45,7 +45,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
     {
         /** @var ConsumerService $consumeService */
         $consumeService = $this->prophesize(ConsumerService::class);
-        $consumeService->getConfiguration(Argument::type('string'))
+        $consumeService->getConfiguration(Argument::type('string'), Argument::any())
             ->shouldBeCalledTimes($shouldBeCalled['consumeService->getConfiguration'])
             ->willReturn([
                 ConsumerService::PROPERTY_ISS => 'http://example.com',
@@ -197,7 +197,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
     public function testSignedTokens()
     {
         $consumeService = $this->prophesize(ConsumerService::class);
-        $consumeService->getConfiguration(Argument::type('string'))
+        $consumeService->getConfiguration(Argument::type('string'), Argument::any())
             ->shouldBeCalledTimes(1)
             ->willReturn([
                 ConsumerService::PROPERTY_ISS => 'http://example.com',
@@ -290,7 +290,7 @@ ei0CfXoW6iz1
     public function testOtherToken()
     {
         $consumeService = $this->prophesize(ConsumerService::class);
-        $consumeService->getConfiguration(Argument::type('string'))
+        $consumeService->getConfiguration(Argument::type('string'), Argument::any())
             ->shouldBeCalledTimes(1)
             ->willReturn([
                 ConsumerService::PROPERTY_ISS => 'http://example.com',
@@ -358,7 +358,7 @@ wyPVYlhkwT6sdDFWJ3bwMbPUBXltjX3Hi6Q3nYEy+3ifYXgITx2iWQpkE0dLT9ip
     public function testMixedTokens()
     {
         $consumeService = $this->prophesize(ConsumerService::class);
-        $consumeService->getConfiguration(Argument::type('string'))
+        $consumeService->getConfiguration(Argument::type('string'), Argument::any())
             ->shouldBeCalledTimes(1)
             ->willReturn([
                 ConsumerService::PROPERTY_ISS => 'http://example.com',
