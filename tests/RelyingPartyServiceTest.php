@@ -135,16 +135,17 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
         $this->assertFalse($this->service->validate($token, $validator));
     }
 
-    /**
-     * @expectedException OutOfBoundsException
-     * @expectedExceptionMessage Requested claim is not configured
-     */
     public function testEmptyToken()
     {
         $this->_prepare(['consumeService->getConfiguration' => 1]);
         $token = (new Builder())->getToken();
-        $validator = $this->service->validator($token);
-        $this->assertFalse($this->service->validate($token, $validator));
+        try {
+            $validator = $this->service->validator($token);
+            $this->assertFalse($this->service->validate($token, $validator));
+            self::assertFalse(true, 'You should do not be here');
+        } catch (OutOfBoundsException $e) {
+            self::assertEquals('Requested claim is not configured', $e->getMessage());
+        }
     }
 
     public function testAllRequiredFields()
