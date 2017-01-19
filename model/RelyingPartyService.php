@@ -82,7 +82,7 @@ class RelyingPartyService extends ConfigurableService
             $validator->setId($id);
             $validator->setSubject($subject);
         } else {
-            \common_Logger::e('OpenId consumer '.$iss.' wasn\'t configured');
+            \common_Logger::e('OpenId consumer '.$token->getClaim('iss').' wasn\'t configured');
         }
 
         return $validator;
@@ -102,13 +102,13 @@ class RelyingPartyService extends ConfigurableService
             return false;
         }
 
-        return $token->validate($validator) && $this->verifySign($token, $validator->get('iss'));
+        return $token->validate($validator) && $this->verifySign($token);
     }
 
-    private function verifySign(Token $token, $iss = '')
+    private function verifySign(Token $token)
     {
 
-        $config = $this->consumerService->getConfiguration($iss);
+        $config = $this->getConfig($token);
 
         $verified = true;
         if (isset($config[ConsumerService::PROPERTY_ENCRYPTION])) {
