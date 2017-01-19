@@ -202,47 +202,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
             ->shouldBeCalledTimes(1)
             ->willReturn([
                 ConsumerService::PROPERTY_ISS => 'http://example.com',
-                ConsumerService::PROPERTY_SECRET => 'Bag Attributes
-    Microsoft Local Key set: <No Values>
-    localKeyID: 01 00 00 00 
-    friendlyName: {58E2A89C-4A4B-4372-90AC-D6B34A129ACE}
-    Microsoft CSP Name: Microsoft Strong Cryptographic Provider
-Key Attributes
-    X509v3 Key Usage: 10 
------BEGIN ENCRYPTED PRIVATE KEY-----
-MIIFDjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQwwDgQI+RxvitdKd5wCAggA
-MBQGCCqGSIb3DQMHBAizoWc52dWkWQSCBMiK3f95he4li3G/aI63cM2EBclE5/kd
-o/2aiAnpQq0StEB+EIzrw2zY6WVcv+94W16Mqc0nUfdbSQd1nV41vWmJVE3GCzKG
-4lXtEAjXJde4npTFGYt6YzOtZAW0WHw6w36KnmCCir8seE6hswihKgKqYDCB7Es8
-9OTAnDwCptA+CPlYN+xQLD5/gdoIBY1lV/ylDGF/Zpv3LcShd7f4MHdJ6TfdePY/
-igFNa2XWTCVvF0lUy11S+lGRfa98BZyJ7QMZfqXe9HqPVNEFdsXwKWSVOqcGcR9V
-PocpbfRL2Dn1t5IWRN6RdT4oK8jeiBzXjj9ejHl4+6elIAvuB5CuvVpHrkwx9Kvi
-STduKyCwujCDC4/DLYGEMp1eX2PfDfAik5YY6qB82FbalsepA8/gHae7saGQbbbg
-654cdezNdUATHoOELj5vWHTQBeS6FfqUrU1PyY3vga7kUcBFCupxXw+7WKVbCq8r
-/Mt8jpIsA3V0VABYWFphtEEQI1J3YcTp/MIdLeZXazknaDT2u++nPDRsvLVpO0n+
-6x5d8UMCSVEExv2J0fBkaJ7Vbgp28XPpTOb3ylDrFgDzOcGMQjcubo2mXsX+cRtZ
-nZ5A96zvogygv6TTfZTcSbFJq1LxqdrA81UNCfGvhDwDKGbY1c483li9K9UIHDrn
-6yXH0lBYBiR+XJPETDhyiL/J2NQLXLpXUgzUe31P3Z6RustaKdNF8hRyvreu0QDz
-2uFrm17x8RwAAfIJZjTtZSZsBmPjePWgE6e6EXjHWPVITzHv2yrbxe7q1f6XmpKA
-grLfnxr1Rjb7VG2h50nGRGBsYvQv4u5xA6jOrjlrDM97dwKmdQfLqq6DDzUuHtdn
-BGiWVzRvfJmMQb0ezaAHr3f8RNWt7y6OZB82J1Qa4T16FBePTjDwQXFBW8JaS5sg
-riplWWvokjoMWQPC2IWkE7SJ3fQEEB98X7uaUXVlbWDuzoYdBKTuyfLkIBlNVXMP
-7C9OENIrfgW9NcRRVUuFQHHun7jnmDevipg7wy5HQqvoBufgIYXToprN1P6/l3da
-zWuNan/c8l5TfPdmCiWnYqTVhQUUVErl3BBt0+mTpeuR9YJVUaglx842usJVvSFo
-J9om6dWTKDbrl5QAzNLC/YQlEDTzSbrcr579f4pn1nNT2+EyBvaEpGeQe6lrRicB
-Np9P6brjcrB1G6BKDSSG18B5in6Nea+taEvBnyHG2Dik7GAaPus9lO4/+AnolcrJ
-X8lep5GILdj8foJKx7UTF0ZoNPH7K0YpSZNs2wkfwBzgxqnXM+emEc/rzTzul3ur
-9q+Gr6MeCbLZESWpnV2M67+eRqHaV9J2FvRlHe2TpgrlC8DwDz6G78oWSgF8+iq3
-I6UE+9weKrdoymQsuzDcVaFnKdoCNzUVJ0IFpEsCr/HJy8G9KVIMcBOrJaJcB8Ba
-FNWBmb/B4JWfkxthdh/sMGKLdR1xHbkJzMSVHQw2sNE0cQZhNlANS0U2Ap9uTAtq
-WQk3o+KAMLS8/Jws79GKTeURwVcort1I0pvxLZba+ORf6fblc8uWI0/1RpT84zU8
-xlbs7dHvTzBRrIcXTAzu7c0Y2zNOK2IpwXGT5qW6LpktqB120EfCZvjgaUqB1673
-F7U=
------END ENCRYPTED PRIVATE KEY-----
-Bag Attributes
-    localKeyID: 01 00 00 00 
-subject=/CN=idsrv3test
-issuer=/CN=DevRoot
+                ConsumerService::PROPERTY_SECRET => '
 -----BEGIN CERTIFICATE-----
 MIIDBTCCAfGgAwIBAgIQNQb+T2ncIrNA6cKvUA1GWTAJBgUrDgMCHQUAMBIxEDAO
 BgNVBAMTB0RldlJvb3QwHhcNMTAwMTIwMjIwMDAwWhcNMjAwMTIwMjIwMDAwWjAV
