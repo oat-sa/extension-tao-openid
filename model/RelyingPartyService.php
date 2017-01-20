@@ -102,7 +102,7 @@ class RelyingPartyService extends ConfigurableService
             return false;
         }
 
-        return $token->validate($validator) && $this->verifySign($token);
+        return $this->verifySign($token) && $token->validate($validator);
     }
 
     private function verifySign(Token $token)
