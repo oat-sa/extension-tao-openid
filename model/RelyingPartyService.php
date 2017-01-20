@@ -60,14 +60,13 @@ class RelyingPartyService extends ConfigurableService
         $token->getHeaders(); // Retrieves the token header
         $token->getClaims(); // Retrieves the token claims
 
-        $iss = $token->getClaim('iss');
-
-        $config = $this->consumerService->getConfiguration($iss);
+        $config = $this->getConfig($token);
         if (count($config)) {
 
             // It will use the current time to validate (iat, nbf and exp)
             $validator = new ValidationData($time);
 
+            $iss = $token->getClaim('iss');
             $audience = $token->getClaim('aud');
             $subject = $token->getClaim('sub');
 
@@ -82,6 +81,8 @@ class RelyingPartyService extends ConfigurableService
             $validator->setAudience($audience);
             $validator->setId($id);
             $validator->setSubject($subject);
+        } else {
+            \common_Logger::e('OpenId consumer '.$token->getClaim('iss').' wasn\'t configured');
         }
 
         return $validator;
@@ -101,28 +102,29 @@ class RelyingPartyService extends ConfigurableService
             return false;
         }
 
-        return $token->validate($validator) && $this->verifySign($token, $validator->get('iss'));
+        return $this->verifySign($token) && $token->validate($validator);
     }
 
-    private function verifySign(Token $token, $iss = '')
+    private function verifySign(Token $token)
     {
 
-        $config = $this->consumerService->getConfiguration($iss);
-
+        $config = $this->getConfig($token);
 
         $verified = true;
         if (isset($config[ConsumerService::PROPERTY_ENCRYPTION])) {
             switch ($config[ConsumerService::PROPERTY_ENCRYPTION]) {
-                case 'RSA':
+                case ConsumerService::PROPERTY_ENCRYPTION_TYPE_RSA:
                     $signer = new Sha256();
                     $verified = $token->verify(
                         $signer,
-                        new Key($config[ConsumerService::PROPERTY_SECRET],
-                            isset($config[ConsumerService::PROPERTY_KEY]) ? $config[ConsumerService::PROPERTY_KEY] : '')
+                        new Key($config[ConsumerService::PROPERTY_SECRET])
                     );
                     break;
+                case ConsumerService::PROPERTY_ENCRYPTION_TYPE_NULL:
+                    // without signatures
+                    break;
                 default:
-                    throw new InvalidConsumerConfigException('Undefined type of the signature ' . $config['signer']);
+                    throw new InvalidConsumerConfigException('Undefined type of the signature '. $config[ConsumerService::PROPERTY_ENCRYPTION]);
             }
         }
 
@@ -144,8 +146,7 @@ class RelyingPartyService extends ConfigurableService
     public function delegateControl(Token $token)
     {
         $uri = null;
-        $iss = $token->getClaim('iss');
-        $config = $this->consumerService->getConfiguration($iss);
+        $config = $this->getConfig($token);
         $entryPointId = $config[ConsumerService::PROPERTY_ENTRY_POINT];
         /** @var DefaultUrlService $urlService */
         $urlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
@@ -155,6 +156,14 @@ class RelyingPartyService extends ConfigurableService
             $uri = $urlService->getUrl($entryPointId);
         }
         return $uri;
+    }
+
+    private function getConfig(Token $token)
+    {
+        $iss = $token->getClaim('iss');
+        $kid = $token->hasHeader('kid') ? $token->getHeader('kid') : '';
+
+        return $this->consumerService->getConfiguration($iss, $kid);
     }
 
     /**
