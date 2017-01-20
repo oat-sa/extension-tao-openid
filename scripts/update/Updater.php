@@ -64,7 +64,7 @@ class Updater extends \common_ext_ExtensionUpdater
                 ]
             );
             $this->getServiceManager()->register(DefaultUrlService::SERVICE_ID, $UrlService);
-            
+
             $this->setVersion('0.2.0');
         }
         $this->skip('0.2.0', '0.2.1');
@@ -72,6 +72,11 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isVersion('0.2.1')) {
             OntologyUpdater::syncModels();
             $this->setVersion('0.2.2');
+        }
+
+        if ($this->isVersion('0.2.2')) {
+            OntologyUpdater::syncModels();
+            $this->setVersion('0.3.0');
         }
     }
 }

@@ -37,21 +37,40 @@
         <rdfs:comment xml:lang="en-US"><![CDATA[Secret used for signatures]]></rdfs:comment>
         <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdConsumer"/>
         <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
-        <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#TextBox"/>
+        <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#TextArea"/>
     </rdf:Description>
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdAud">
+
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryptionType">
+        <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#SystemObject"/>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Encryption Type]]></rdfs:comment>
+        <rdfs:label xml:lang="en-US"><![CDATA[Encryption Type]]></rdfs:label>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryption">
         <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-        <rdfs:label xml:lang="en-US"><![CDATA[AUD Audience]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Allowed audience for Open ID client]]></rdfs:comment>
+        <rdfs:label xml:lang="en-US"><![CDATA[Encryption]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Encryption algorithm for signature]]></rdfs:comment>
         <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdConsumer"/>
+        <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryptionType"/>
+        <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#RadioBox"/>
+        <generis:validationRule><![CDATA[notEmpty]]></generis:validationRule>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryptionTypeRsa">
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryptionType"/>
+        <rdfs:label xml:lang="en-US"><![CDATA[RSA]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[RSA with private and public keys]]></rdfs:comment>
         <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
-        <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#TextBox"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryptionTypeNull">
+        <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryptionType"/>
+        <rdfs:label xml:lang="en-US"><![CDATA[Without encryption]]></rdfs:label>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Encryption won't be checked]]></rdfs:comment>
+        <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
     </rdf:Description>
 
     <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOOpenId.rdf#EntryHandler">
         <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
         <rdfs:label xml:lang="en-US"><![CDATA[Application Entry Point]]></rdfs:label>
-        <rdfs:comment xml:lang="en-US"><![CDATA[Determines entty point to handle incoming connections]]></rdfs:comment>
+        <rdfs:comment xml:lang="en-US"><![CDATA[Determines entity point to handle incoming connections]]></rdfs:comment>
         <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdConsumer"/>
         <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
         <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#ComboBox"/>

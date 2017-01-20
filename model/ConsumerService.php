@@ -33,6 +33,8 @@ class ConsumerService extends tao_models_classes_ClassService
     const PROPERTY_ISS = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdIss';
     const PROPERTY_KEY = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdClientKey';
     const PROPERTY_ENCRYPTION = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryption';
+    const PROPERTY_ENCRYPTION_TYPE_RSA = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryptionTypeRsa';
+    const PROPERTY_ENCRYPTION_TYPE_NULL = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdEncryptionTypeNull';
     const PROPERTY_SECRET = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#OpenIdSecret';
     const PROPERTY_ENTRY_POINT = 'http://www.tao.lu/Ontologies/TAOOpenId.rdf#EntryHandler';
 
@@ -49,11 +51,12 @@ class ConsumerService extends tao_models_classes_ClassService
      *
      * @return array - client_id and client_secret properties for the iss
      */
-    public function getConfiguration($iss = '')
+    public function getConfiguration($iss = '', $kid = '')
     {
         $config = [];
         $instances = $this->getRootClass()->searchInstances([
-            self::PROPERTY_ISS => $iss
+            self::PROPERTY_ISS => $iss,
+            self::PROPERTY_KEY => $kid
         ], [
             'recursive' => false,
             'like' => false,
@@ -71,12 +74,14 @@ class ConsumerService extends tao_models_classes_ClassService
                 self::PROPERTY_KEY,
                 self::PROPERTY_SECRET,
                 self::PROPERTY_ENTRY_POINT,
+                self::PROPERTY_ENCRYPTION,
             ]);
 
             $config = [
-                self::PROPERTY_KEY => $res[self::PROPERTY_KEY][0]->literal,
-                self::PROPERTY_SECRET => $res[self::PROPERTY_SECRET][0]->literal,
+                self::PROPERTY_KEY => count($res[self::PROPERTY_KEY]) ? $res[self::PROPERTY_KEY][0]->literal : '',
+                self::PROPERTY_SECRET => count($res[self::PROPERTY_SECRET]) ? $res[self::PROPERTY_SECRET][0]->literal : '',
                 self::PROPERTY_ENTRY_POINT => $res[self::PROPERTY_ENTRY_POINT][0]->literal,
+                self::PROPERTY_ENCRYPTION => $res[self::PROPERTY_ENCRYPTION][0]->getUri(),
             ];
         }
 
