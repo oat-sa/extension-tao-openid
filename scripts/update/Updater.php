@@ -78,5 +78,10 @@ class Updater extends \common_ext_ExtensionUpdater
             OntologyUpdater::syncModels();
             $this->setVersion('0.3.0');
         }
+
+        if ($this->isVersion('0.3.0')) {
+            OntologyUpdater::syncModels();
+            $this->setVersion('0.3.1');
+        }
     }
 }
