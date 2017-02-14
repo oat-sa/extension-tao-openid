@@ -22,7 +22,6 @@
 
 namespace oat\taoOpenId\model;
 
-use Lcobucci\JWT\Token;
 use oat\taoOpenId\model\session\Generator;
 use oat\taoOpenId\model\session\OpenIdAwareSessionInterface;
 use common_session_SessionManager;
@@ -56,7 +55,7 @@ class SessionService extends ConfigurableService
     }
 
     /***
-     * @return Token|null
+     * @return \Lcobucci\JWT\Token|null
      * @throws \common_exception_Error
      */
     public function retrieveSessionToken()
