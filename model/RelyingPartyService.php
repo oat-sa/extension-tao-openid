@@ -24,7 +24,7 @@ namespace oat\taoOpenId\model;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
-use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Token as JWTToken;
 use Lcobucci\JWT\ValidationData;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\mvc\DefaultUrlService;
@@ -47,14 +47,14 @@ class RelyingPartyService extends ConfigurableService
     }
 
     /**
-     * @param Token $token
+     * @param JWTToken $token
      * @param null $time - Current time() (if you use TZ, set $time in current TZ)
      * # common_session_SessionManager::getSession()->getTimezone(), new \DateTimeZone($timeZone)
      * # (new \DateTime('now', new \DateTimeZone($timeZone)))->getTimestamp()
      *
      * @return ValidationData | false
      */
-    public function validator(Token $token, $time = null)
+    public function validator(JWTToken $token, $time = null)
     {
         $validator = false;
         $token->getHeaders(); // Retrieves the token header
@@ -89,10 +89,10 @@ class RelyingPartyService extends ConfigurableService
     }
 
     /**
-     * @param Token $token
+     * @param JWTToken $token
      * @return bool
      */
-    public function validate(Token $token, ValidationData $validator = null)
+    public function validate(JWTToken $token, ValidationData $validator = null)
     {
         if (!$validator) {
             $validator = $this->validator($token);
@@ -105,7 +105,7 @@ class RelyingPartyService extends ConfigurableService
         return $this->verifySign($token) && $token->validate($validator);
     }
 
-    private function verifySign(Token $token)
+    private function verifySign(JWTToken $token)
     {
 
         $config = $this->getConfig($token);
@@ -137,13 +137,13 @@ class RelyingPartyService extends ConfigurableService
     }
 
     /**
-     * @param Token $token
+     * @param JWTToken $token
      * @return null|\string
      * @throws \oat\oatbox\service\ServiceNotFoundException
      * @throws \common_Exception
      * @throws \OutOfBoundsException
      */
-    public function delegateControl(Token $token)
+    public function delegateControl(JWTToken $token)
     {
         $uri = null;
         $config = $this->getConfig($token);
@@ -158,7 +158,7 @@ class RelyingPartyService extends ConfigurableService
         return $uri;
     }
 
-    private function getConfig(Token $token)
+    private function getConfig(JWTToken $token)
     {
         $iss = $token->getClaim('iss');
         $kid = $token->hasHeader('kid') ? $token->getHeader('kid') : '';
