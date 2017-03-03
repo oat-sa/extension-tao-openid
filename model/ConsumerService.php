@@ -23,7 +23,7 @@ namespace oat\taoOpenId\model;
 
 
 use common_Logger;
-use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Token as JWTToken;
 use oat\tao\model\mvc\DefaultUrlService;
 use tao_models_classes_ClassService;
 
@@ -106,11 +106,11 @@ class ConsumerService extends tao_models_classes_ClassService
 
     /**
      * Return user label for associated to token provider
-     * @param Token $token
+     * @param JWTToken $token
      * @param string $default
      * @return string
      */
-    public function getConsumerLabel(Token $token, $default = '')
+    public function getConsumerLabel(JWTToken $token, $default = '')
     {
         $label = $default;
         $iss = $token->getClaim('iss');
