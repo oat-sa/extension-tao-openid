@@ -87,6 +87,12 @@ class User implements UserInterface
             case PROPERTY_USER_ROLES :
                 $returnValue = $this->getRoles();
                 break;
+            case PROPERTY_USER_FIRSTNAME :
+                $returnValue = [$this->getToken()->getFirstName()];
+                break;
+            case PROPERTY_USER_LASTNAME :
+                $returnValue = [$this->getToken()->getLastName()];
+                break;
             default:
                 \common_Logger::d('Unknown property ' . $property . ' requested from ' . __CLASS__);
                 $returnValue = [];
