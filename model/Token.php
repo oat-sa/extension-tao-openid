@@ -52,6 +52,16 @@ class Token
      */
     public function getFullName()
     {
-        return $this->rawToken->getClaim('given_name') . ' ' . $this->rawToken->getClaim('family_name');
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
+    public function getFirstName()
+    {
+        return $this->rawToken->getClaim('given_name');
+    }
+
+    public function getLastName()
+    {
+        return $this->rawToken->getClaim('family_name');
     }
 }
