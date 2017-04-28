@@ -28,10 +28,10 @@ return array(
     'label' => 'Open ID library',
     'description' => 'TAO Open ID library and helpers',
     'license' => 'GPL-2.0',
-    'version' => '0.4.0',
+    'version' => '1.0.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
-        'tao' => '>=7.37.1'
+        'tao' => '>=9.0.0'
     ),
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoOpenIdManager',
     'acl' => array(
@@ -58,9 +58,6 @@ return array(
         
         #BASE URL (usually the domain root)
         'BASE_URL' => ROOT_URL.'taoOpenId/',
-        
-        #BASE WWW required by JS
-        'BASE_WWW' => ROOT_URL.'taoOpenId/views/'
     ),
     'update'    => Updater::class,
     'extra' => array(
