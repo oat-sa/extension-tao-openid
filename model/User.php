@@ -21,6 +21,7 @@ namespace oat\taoOpenId\model;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\user\User as UserInterface;
 use oat\tao\model\user\TaoRoles;
+use oat\taoNccer\model\Token as NccerToken;
 
 class User implements UserInterface
 {
@@ -29,7 +30,7 @@ class User implements UserInterface
     /** @var array */
     protected $roles = [];
 
-    /** @var Token */
+    /** @var NccerToken */
     protected $token;
 
     const ROLE_INCOMER = TaoRoles::ANONYMOUS;
@@ -101,7 +102,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return Token
+     * @return NccerToken
      */
     protected function getToken()
     {
