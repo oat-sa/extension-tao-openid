@@ -55,7 +55,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $UrlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
 
-            $UrlService->setOption(Generator::entryPointId,
+            $UrlService->setRoute(Generator::entryPointId,
                 [
                     'ext' => 'tao',
                     'controller' => 'Main',
@@ -84,6 +84,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('0.3.1');
         }
 
-        $this->skip('0.3.1', '1.0.0');
+        $this->skip('0.3.1', '1.0.1');
     }
 }

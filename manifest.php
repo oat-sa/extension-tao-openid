@@ -28,10 +28,10 @@ return array(
     'label' => 'Open ID library',
     'description' => 'TAO Open ID library and helpers',
     'license' => 'GPL-2.0',
-    'version' => '1.0.0',
+    'version' => '1.0.1',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
-        'tao' => '>=9.0.0'
+        'tao' => '>=10.3.2'
     ),
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoOpenIdManager',
     'acl' => array(
