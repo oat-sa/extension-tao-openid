@@ -97,7 +97,7 @@ class ConsumerService extends tao_models_classes_ClassService
     {
         /** @var DefaultUrlService $urlService */
         $urlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
-        $routes = $urlService->getOption('routes');
+        $routes = $urlService->getRoutes();
         $routes = array_keys(array_filter($routes, function ($route) {
             return isset($route['context']) && $route['context'] === self::urlContext;
         }));
