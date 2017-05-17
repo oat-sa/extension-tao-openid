@@ -39,7 +39,7 @@ class SetUpEntryOpenIdEntryPoint extends \common_ext_action_InstallAction
 
         $UrlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
 
-        $UrlService->setOption(Generator::entryPointId,
+        $UrlService->setRoute(Generator::entryPointId,
             [
                 'ext' => 'tao',
                 'controller' => 'Main',
