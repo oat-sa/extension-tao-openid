@@ -120,7 +120,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
 
     public function testTimeValidator()
     {
-        $this->_prepare(['consumeService->getConfiguration' => 1]);
+        $this->_prepare(['consumeService->getConfiguration' => 4]);
 
         $token = $this->getFakeToken();
         $validator = $this->service->validator($token);
@@ -137,11 +137,11 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
 
     public function testEmptyToken()
     {
-        $this->_prepare(['consumeService->getConfiguration' => 1]);
+        $this->_prepare(['consumeService->getConfiguration' => 0]);
         $token = (new Builder())->getToken();
         try {
             $validator = $this->service->validator($token);
-            $this->assertFalse($this->service->validate($token, $validator));
+            $this->service->validate($token, $validator);
             self::assertFalse(true, 'You should do not be here');
         } catch (OutOfBoundsException $e) {
             self::assertEquals('Requested claim is not configured', $e->getMessage());
@@ -150,7 +150,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
 
     public function testAllRequiredFields()
     {
-        $this->_prepare(['consumeService->getConfiguration' => 1]);
+        $this->_prepare(['consumeService->getConfiguration' => 2]);
 
         $token = (new Builder())
             ->issuedBy('http://example.com')
@@ -165,7 +165,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
 
     public function testUnexpectedIssuer()
     {
-        $this->_prepare(['consumeService->getConfiguration' => 1]);
+        $this->_prepare(['consumeService->getConfiguration' => 2]);
 
         $token = (new Builder())
             ->issuedBy('http://example.com')
@@ -181,7 +181,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
 
     public function testUnexpectedAudience()
     {
-        $this->_prepare(['consumeService->getConfiguration' => 1]);
+        $this->_prepare(['consumeService->getConfiguration' => 2]);
 
         $token = (new Builder())
             ->issuedBy('http://example.com')
@@ -199,7 +199,7 @@ class RelyingPartyServiceTest extends TaoPhpUnitTestRunner
     {
         $consumeService = $this->prophesize(ConsumerService::class);
         $consumeService->getConfiguration(Argument::type('string'), Argument::any())
-            ->shouldBeCalledTimes(1)
+            ->shouldBeCalledTimes(2)
             ->willReturn([
                 ConsumerService::PROPERTY_ISS => 'http://example.com',
                 ConsumerService::PROPERTY_SECRET => '
@@ -252,7 +252,7 @@ ei0CfXoW6iz1
     {
         $consumeService = $this->prophesize(ConsumerService::class);
         $consumeService->getConfiguration(Argument::type('string'), Argument::any())
-            ->shouldBeCalledTimes(1)
+            ->shouldBeCalledTimes(2)
             ->willReturn([
                 ConsumerService::PROPERTY_ISS => 'http://example.com',
                 ConsumerService::PROPERTY_SECRET => '
@@ -320,7 +320,7 @@ wyPVYlhkwT6sdDFWJ3bwMbPUBXltjX3Hi6Q3nYEy+3ifYXgITx2iWQpkE0dLT9ip
     {
         $consumeService = $this->prophesize(ConsumerService::class);
         $consumeService->getConfiguration(Argument::type('string'), Argument::any())
-            ->shouldBeCalledTimes(1)
+            ->shouldBeCalledTimes(2)
             ->willReturn([
                 ConsumerService::PROPERTY_ISS => 'http://example.com',
                 ConsumerService::PROPERTY_SECRET => '
