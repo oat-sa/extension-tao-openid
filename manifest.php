@@ -31,7 +31,8 @@ return array(
     'version' => '1.2.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
-        'generis' => '>=5.9.0'
+        'generis' => '>=5.9.0',
+        'tao' => '>=10.4.0'
     ),
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoOpenIdManager',
     'acl' => array(
