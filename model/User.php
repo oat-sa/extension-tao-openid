@@ -18,6 +18,7 @@
  */
 namespace oat\taoOpenId\model;
 
+use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\user\User as UserInterface;
 use oat\tao\model\user\TaoRoles;
@@ -80,17 +81,17 @@ class User implements UserInterface
     {
         $returnValue = null;
         switch ($property) {
-            case PROPERTY_USER_DEFLG :
-            case PROPERTY_USER_UILG :
+            case GenerisRdf::PROPERTY_USER_DEFLG :
+            case GenerisRdf::PROPERTY_USER_UILG :
                 $returnValue = [$this->getLanguage()];
                 break;
-            case PROPERTY_USER_ROLES :
+            case GenerisRdf::PROPERTY_USER_ROLES :
                 $returnValue = $this->getRoles();
                 break;
-            case PROPERTY_USER_FIRSTNAME :
+            case GenerisRdf::PROPERTY_USER_FIRSTNAME :
                 $returnValue = [$this->getToken()->getFirstName()];
                 break;
-            case PROPERTY_USER_LASTNAME :
+            case GenerisRdf::PROPERTY_USER_LASTNAME :
                 $returnValue = [$this->getToken()->getLastName()];
                 break;
             default:
