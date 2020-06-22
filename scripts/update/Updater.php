@@ -31,6 +31,9 @@ use oat\taoOpenId\model\RelyingPartyService;
 use oat\taoOpenId\model\session\Generator;
 use oat\taoOpenId\model\SessionService;
 
+/**
+ * @deprecated use migrations instead. See https://github.com/oat-sa/generis/wiki/Tao-Update-Process
+ */
 class Updater extends \common_ext_ExtensionUpdater
 {
     public function update($initialVersion)
@@ -85,5 +88,10 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('0.3.1', '1.2.3');
+        
+        //Updater files are deprecated. Please use migrations.
+        //See: https://github.com/oat-sa/generis/wiki/Tao-Update-Process
+
+        $this->setVersion($this->getExtension()->getManifest()->getVersion());
     }
 }

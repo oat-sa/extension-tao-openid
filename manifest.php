@@ -28,7 +28,7 @@ return array(
     'label' => 'Open ID library',
     'description' => 'TAO Open ID library and helpers',
     'license' => 'GPL-2.0',
-    'version' => '1.2.3',
+    'version' => '1.3.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
         'generis' => '>=5.9.0',
