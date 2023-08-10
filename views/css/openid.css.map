@@ -1,9 +1,1 @@
-{
-	"version": 3,
-	"file": "openid.css",
-	"sources": [
-		"../scss/openid.scss"
-	],
-	"names": [],
-	"mappings": "AAAA,AAIQ,0BAJkB,CACxB,EAAE,AAAA,IAAI,CACJ,cAAc,CACZ,GAAG,AACA,OAAO,AAAC,CACP,OAAO,CAAE,OAAO,CACjB"
-}
+{"version":3,"sourceRoot":"","sources":["../scss/openid.scss"],"names":[],"mappings":"CAIQ,4DACE","file":"openid.css"}
